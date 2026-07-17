@@ -1,7 +1,6 @@
 <?php
 include 'plugin/function.php';
-//   ob_start("sanitize_output"); // Output buffering start
-ob_start(); // Output buffering start
+ob_start(); 
 session_start();
 $pageTitle1 = 'High school';
 unset($_SESSION['pagename']);
@@ -12,9 +11,6 @@ include 'template/header.php';
 
 ?>
 
- 
-
-  
 <main class="cookies-page">
   <section class="cookies-box">
     <div class="label">Politica site-ului</div>
