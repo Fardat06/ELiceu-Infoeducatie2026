@@ -1,4 +1,4 @@
-# Eliceu
+# ELiceu
 Ǝliceu transformă alegerea liceului dintr-un proces complicat și stresant într-o experiență simplă, intuitivă și adaptată fiecărui elev de clasa a VIII-a.
 
 Concepută ca un adevărat „magazin de licee”, platforma reunește într-un singur loc toate liceele din București și le prezintă într-un format modern, ușor de explorat. Elevii pot răsfoi carduri, aplica filtre după profil, sector, specializare sau medie, pot compara opțiuni, salva liceele preferate și accesa pagini detaliate pentru a-și construi treptat propria listă de admitere.
