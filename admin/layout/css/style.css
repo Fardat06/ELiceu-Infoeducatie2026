@@ -1,14 +1,10 @@
-/* ===================================
-   CSS VARIABLES
-   =================================== */
+
 :root {
-  /* Primary Colors */
   --color-primary: #8b5cf6;
   --color-primary-hover: #7c3aed;
   --color-primary-50: rgba(139, 92, 246, 0.05);
   --color-primary-100: rgba(139, 92, 246, 0.1);
   --color-primary-200: rgba(139, 92, 246, 0.2);
-  /* Semantic Colors */
   --color-success: #10b981;
   --color-success-50: rgba(16, 185, 129, 0.05);
   --color-success-100: rgba(16, 185, 129, 0.1);
@@ -21,17 +17,13 @@
   --color-info: #3b82f6;
   --color-info-50: rgba(59, 130, 246, 0.05);
   --color-info-100: rgba(59, 130, 246, 0.1);
-  /* Text Colors */
   --color-text: #1e293b;
   --color-text-secondary: #475569;
   --color-text-muted: #94a3b8;
-  /* Background Colors */
   --color-background: #ffffff;
   --color-surface: #f8fafc;
   --color-surface-hover: #f1f5f9;
-  /* Border Colors */
   --color-border: #e2e8f0;
-  /* Typography */
   --font-primary: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -41,12 +33,10 @@
   --text-2xl: 1.5rem;
   --text-3xl: 1.75rem;
   --text-4xl: 2rem;
-  /* Font Weights */
   --weight-normal: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
   --weight-bold: 700;
-  /* Spacing */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-base: 0.75rem;
@@ -55,24 +45,19 @@
   --space-xl: 2rem;
   --space-2xl: 3rem;
   --space-3xl: 4rem;
-  /* Border Radius */
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
   --radius-full: 9999px;
-  /* Shadows */
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  /* Layout */
   --sidebar-width: 260px;
   --sidebar-collapsed-width: 80px;
   --header-height: 64px;
-  /* Transitions */
   --transition: 0.2s ease;
 }
-/* Dark Theme */
 [data-theme="dark"] {
   --color-text: #ffffff;
   --color-text-secondary: #c0c0c0;
@@ -82,9 +67,6 @@
   --color-surface-hover: #262626;
   --color-border: #2d2d2d;
 }
-/* ===================================
-   RESET & BASE STYLES
-   =================================== */
 *,
 *::before,
 *::after {
@@ -118,9 +100,7 @@ button {
 * {
   scrollbar-color: var(--color-text-muted) transparent;
 }
-/* ===================================
-   BUTTON COMPONENTS
-   =================================== */
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -159,15 +139,12 @@ button {
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
-/* ===================================
-   DASHBOARD LAYOUT
-   =================================== */
+
 .dashboard-container {
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
-/* Sidebar */
 .dashboard-sidebar {
   width: var(--sidebar-width);
   background: var(--color-background);
@@ -278,7 +255,6 @@ button {
   z-index: 999;
   transition: var(--transition);
 }
-/* Main Content */
 .dashboard-main {
   flex: 1;
   display: flex;
@@ -286,7 +262,6 @@ button {
   height: 100vh;
   overflow: hidden;
 }
-/* Header */
 .dashboard-header {
   height: var(--header-height);
   background: var(--color-background);
@@ -309,7 +284,6 @@ button {
   font-weight: var(--weight-semibold);
   color: var(--color-text);
 }
-/* Search Container */
 .search-container {
   display: flex;
   align-items: center;
@@ -387,7 +361,6 @@ button {
   align-items: center;
   gap: var(--space-md);
 }
-/* Theme Toggle (inside dropdown) */
 .theme-toggle {
   display: flex;
   gap: var(--space-xs);
@@ -414,7 +387,6 @@ button {
   background: var(--color-primary);
   color: white;
 }
-/* Notification Button */
 .notification-button {
   position: relative;
   display: flex;
@@ -448,7 +420,7 @@ button {
   align-items: center;
   justify-content: center;
 }
-/* User Menu */
+
 .user-menu {
   position: relative;
 }
@@ -527,7 +499,6 @@ button {
 .user-menu-item .icon {
   font-size: 1.4rem;
 }
-/* Content Area */
 .dashboard-content {
   flex: 1;
   overflow-y: auto;
@@ -535,7 +506,6 @@ button {
   border-top-left-radius: var(--radius-xl);
   background: var(--color-surface);
 }
-/* Views */
 .dashboard-view {
   display: none;
 }
@@ -551,7 +521,6 @@ button {
     opacity: 1;
   }
 }
-/* Stats Cards */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -623,7 +592,6 @@ button {
 .stat-card-change.negative {
   color: var(--color-error);
 }
-/* Chart Cards */
 .chart-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -653,7 +621,6 @@ button {
   position: relative;
   height: 300px;
 }
-/* Table Styles */
 .dashboard-table-container {
   background: var(--color-background);
   border: 1px solid var(--color-border);
@@ -744,7 +711,6 @@ button {
   background: var(--color-warning-100);
   color: var(--color-warning);
 }
-/* Empty State */
 .empty-state {
   text-align: center;
   padding: var(--space-2xl) var(--space-md);
@@ -773,10 +739,7 @@ button {
   color: var(--color-text-secondary);
   margin-bottom: var(--space-xl);
 }
-/* ===================================
-   RESPONSIVE DESIGN
-   =================================== */
-/* Tablet and Mobile */
+
 @media (max-width: 1024px) {
   .dashboard-sidebar {
     position: fixed;
@@ -806,7 +769,6 @@ button {
   .dashboard-header .dashboard-sidebar-toggle {
     display: flex;
   }
-  /* Search responsive styles */
   .search-container {
     position: fixed;
     top: 0;
@@ -841,7 +803,7 @@ button {
   .mobile-search-btn {
     display: flex;
   }
-  /* Sidebar Overlay Mobile Behavior */
+
   .dashboard-sidebar-overlay.active {
     opacity: 1;
     pointer-events: auto;
@@ -867,7 +829,6 @@ button {
     grid-template-columns: 1fr;
   }
 }
-/* Mobile */
 @media (max-width: 768px) {
   .dashboard-header {
     padding: 0 var(--space-md);
@@ -886,7 +847,7 @@ button {
     overflow-x: auto;
   }
 }
-/* Small Mobile */
+
 @media (max-width: 480px) {
   .stats-grid {
     grid-template-columns: 1fr;
@@ -897,12 +858,12 @@ button {
     gap: var(--space-sm);
   }
 }
-/* Focus Styles */
+
 *:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px var(--color-primary);
 }
-/* Reduced Motion */
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
