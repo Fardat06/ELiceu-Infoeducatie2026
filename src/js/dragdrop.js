@@ -1,21 +1,18 @@
-// dragdrop.js — SortableJS reorder for the personal list, saved to the DB.
-
 let sortable = null;
 
 function initDragDrop() {
   const grid = document.getElementById('productsGrid');
   if (!grid || typeof Sortable === 'undefined') return;
-  if (sortable) { sortable.destroy(); sortable = null; }   // rebind cleanly after AJAX
+  if (sortable) { sortable.destroy(); sortable = null; } 
 
-  // only the personal list uses sortable cards
   if (!grid.querySelector('.sort-item')) return;
 
   sortable = Sortable.create(grid, {
     animation: 150,
     draggable: '.sort-item',
     ghostClass: 'hovered',
-    scroll: true,             // autoscroll the page near the edges
-    scrollSensitivity: 80,    // px from edge that triggers scroll
+    scroll: true,             
+    scrollSensitivity: 80, 
     scrollSpeed: 12,
     onEnd: saveOrder
   });
