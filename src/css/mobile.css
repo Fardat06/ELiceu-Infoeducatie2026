@@ -1,34 +1,10 @@
-/* ============================================================
-   ELICEU — MOBILE & TABLET RESPONSIVE FIXES
-   Fișier NOU. Se încarcă ULTIMUL pe fiecare pagină,
-   după style.css ȘI după css-ul specific paginii
-   (liceu.css / liceu_page.css / compare.css / login.css).
-   Nu modifică nimic din regulile desktop existente —
-   toate regulile de mai jos sunt în interiorul @media
-   (max-width:...), deci desktop (>1024px) rămâne neatins.
-   Breakpoints folosite: ≤768px (tabletă), ≤480px (telefon).
-   ============================================================ */
 
-/* ---------------------------------------------------------
-   0. SIGURANȚĂ GENERALĂ — elimină scroll orizontal accidental
-   --------------------------------------------------------- */
 @media (max-width: 1024px) {
   html, body { max-width: 100%; overflow-x: hidden; }
   img, video { max-width: 100%; height: auto; }
 }
 
-/* ---------------------------------------------------------
-   1. HEADER / NAVIGARE
-   Meniul orizontal "nav" se ascunde pe tabletă/telefon;
-   se folosește hamburgerul (.menu) + sidebar-ul lateral
-   (.sidebar / .overlay) deja construite în CSS-ul tău,
-   dar niciodată activate pentru că nav-ul rămânea vizibil
-   (asta produce textul tăiat/suprapus din header pe mobil).
 
-   ⚠️ Presupune că <nav> este copil al <header>. Dacă butonul
-   hamburger nu deschide deja sidebar-ul la click, mai e nevoie
-   de câteva linii JS — spune-mi și le adaug.
-   --------------------------------------------------------- */
 @media (max-width: 768px) {
   header { padding: 0 20px; }
   header .logo-area { gap: 10px; }
@@ -42,9 +18,6 @@
   .sidebar { width: 85vw; max-width: 300px; padding: 90px 26px; }
 }
 
-/* ---------------------------------------------------------
-   2. BREADCRUMB
-   --------------------------------------------------------- */
 @media (max-width: 768px) {
   .breadcrumb { padding: 12px 20px; font-size: 12px; flex-wrap: wrap; }
 }
@@ -52,9 +25,7 @@
   .breadcrumb { padding: 10px 16px; }
 }
 
-/* ---------------------------------------------------------
-   3. BANNERE (shop-banner / compare-banner)
-   --------------------------------------------------------- */
+
 @media (max-width: 480px) {
   .shop-banner, .compare-banner {
     flex-direction: column;
@@ -68,12 +39,7 @@
   .back-link { padding: 8px 14px; font-size: 12px; }
 }
 
-/* ---------------------------------------------------------
-   4. TABELE — protecție scroll orizontal
-   .admitere-table și .compare-table au deja wrapper cu
-   overflow-x:auto. .specs-table (pagina liceu detaliu) NU
-   are, îl adăugăm aici ca să nu iasă din ecran.
-   --------------------------------------------------------- */
+
 @media (max-width: 768px) {
   .specs-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .specs-table tbody, .specs-table tr { display: table; width: 100%; table-layout: fixed; }
@@ -83,9 +49,7 @@
   .specs-table td { padding: 10px 12px; font-size: 13px; }
 }
 
-/* ---------------------------------------------------------
-   5. BUTOANE / ZONE DE ATINGERE (min. ~44px pe telefon)
-   --------------------------------------------------------- */
+
 @media (max-width: 480px) {
   .btn-primary { height: 50px; font-size: 14px; }
   .btn-secondary-row { flex-direction: column; }
@@ -98,9 +62,6 @@
   .mobile-filter-btn, .search-btn { min-height: 44px; }
 }
 
-/* ---------------------------------------------------------
-   6. PAGINA DETALIU LICEU (product-top / quick-stats)
-   --------------------------------------------------------- */
 @media (max-width: 480px) {
   .quick-stats { grid-template-columns: 1fr 1fr; gap: 10px; }
   .stat-box { padding: 12px; }
@@ -110,21 +71,12 @@
   .thumb { width: 70px; height: 54px; }
 }
 
-/* ---------------------------------------------------------
-   7. GRID PRODUSE — rafinare suplimentară pe tabletă (768px)
-   --------------------------------------------------------- */
+
 @media (max-width: 768px) {
   .products-grid-lista { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* ---------------------------------------------------------
-   8. FOOTER
-   Navigare + Resurse una lângă alta (2 coloane), Legal
-   dedesubt pe toată lățimea, pe tabletă și telefon.
-   Acoperă atât .footer-grid generic, cât și varianta
-   scopată body.page-home .footer-grid (specificitate egală,
-   câștigă prin ordinea în fișier).
-   --------------------------------------------------------- */
+
 @media (max-width: 768px) {
   .footer-grid,
   body.page-home .footer-grid {
@@ -141,14 +93,7 @@
   .footer-grid, body.page-home .footer-grid { gap: 20px 16px; }
 }
 
-/* ---------------------------------------------------------
-   9b. HOMEPAGE (index.php / body.page-home)
-   .profile-left și .stats aveau lățimi fixe (560px/470px)
-   care nu se reduceau niciodată -> scroll orizontal.
-   .profile-tags rămânea pe 2 coloane -> carduri tăiate.
-   .profile-left h2 (48px) nu se reducea -> titlu tăiat,
-   exact "Ce profil ți se potrivește?" din screenshot.
-   --------------------------------------------------------- */
+
 @media (max-width: 768px) {
   body.page-home .profile-section {
     padding: 70px 24px 60px;
@@ -179,11 +124,6 @@
   body.page-home .stat-text { font-size: 14px; }
 }
 
-/* ---------------------------------------------------------
-   9. LOGIN / REGISTER — bug real: la ≤540px .form-box devine
-   100% lățime dar .login-container/.register-container rămân
-   fixe la 500px → scroll orizontal + câmpuri tăiate.
-   --------------------------------------------------------- */
 @media (max-width: 600px) {
   .form-box { width: 100%; height: auto; min-height: 480px; overflow: visible; }
   .login-container, .register-container {
