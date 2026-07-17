@@ -12,20 +12,8 @@ unset($_SESSION['pagename']);
 unset($_SESSION['stylecss']);
 $_SESSION['pagename'] = '';
 
-/* ─────────────────────────────────────────────────────────────
- * CSS strategy: liceu.css is always the base. The mobile
- * overlay (licee_general_mobile.css) is added via <link> right
- * after header.php below — it activates itself via @media
- * queries at ≤680px. Nothing device-specific in PHP.
- * ───────────────────────────────────────────────────────────── */
 $_SESSION['stylecss'] = 'liceu.css';
 
-/* --------------------------------------------------------------
- * Mobile helper — the filter-count badge on the FAB.
- * Desktop UI is untouched.
- * -------------------------------------------------------------- */
-
-/** Count how many filters are currently active (for the FAB badge). */
 
 function count_active_filters() {
     $n = 0;
@@ -43,13 +31,10 @@ $active_filter_count = count_active_filters();
 
 include 'template/header.php';
 ?>
-<!-- Mobile overlay stylesheet — media-query-scoped, no UA sniffing.
-     Adjust the path if your CSS folder differs. -->
 <link rel="stylesheet" href="src/css/licee_general_mobile.css">
 
 <div class="overlay" id="overlay"></div>
 
-<!-- MOBILE FILTER DRAWER -->
 <div class="filter-drawer" id="filterDrawer">
   <div class="filter-drawer-backdrop" id="drawerBackdrop"></div>
   <div class="filter-drawer-panel" id="drawerPanel">
@@ -60,10 +45,8 @@ include 'template/header.php';
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast">✓ Adăugat la lista ta!</div>
 
-<!-- PAGE -->
 <div class="page-wrapper">
   <div class="breadcrumb">
     <a href="index.php">Acasă</a>
@@ -101,10 +84,8 @@ include 'template/header.php';
     <button class="search-btn" id="searchBtn_x">Caută</button>
   </div>
 
-  <!-- MOBILE FILTER DRAWER opens via the FAB — includes Profil, Sector, Medie -->
 
   <div class="shop-main">
-    <!-- FILTER SIDEBAR (desktop; hidden on mobile via existing @media rule in liceu.css) -->
     <form id="filterForm_x">
       <aside class="filter-sidebar" id="filterSidebar">
         <?php $selected_ptofiles = $_GET['profil'] ?? []; ?>
@@ -190,7 +171,6 @@ include 'template/header.php';
       </aside>
     </form>
 
-    <!-- GRID AREA -->
     <div class="grid-area">
       <div class="active-filters" id="activePills"></div>
 
