@@ -1,7 +1,5 @@
 <?php
-// Output buffering start
 include_once 'plugin/function.php';
-//   ob_start("sanitize_output"); // Output buffering start
 ob_start(); 
 session_start();
 $pageTitle1 = 'High school';
