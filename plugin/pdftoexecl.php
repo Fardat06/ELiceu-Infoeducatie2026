@@ -66,7 +66,6 @@
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
-// Column x-thresholds (PDF points), calibrated from the 2026 brochure.
 function colOf(x){
   if(x<55)return 'nr';
   if(x<248)return 'name';
@@ -83,7 +82,7 @@ const numish = s => /^\d+(\.\d+)?$/.test((s||'').trim());
 const HEADERS=["Nr","Tip scoala","Nume scoala","Filiera","Profil","Specializare","Mentiune",
   "Clase","Total locuri","Locuri romi","Locuri CES","Media ultimului admis","Codificare","Observatii","Specializare (complet)"];
 
-let rows=[];   // assembled records
+let rows=[];   
 let pdfFile=null;
 
 const $=id=>document.getElementById(id);
@@ -99,7 +98,7 @@ function setFile(f){pdfFile=f;$('fname').textContent=f.name;$('convert').disable
 
 function splitSchool(s){
   s=(s||'').toString();
-  const m=s.match(/[„”"]/);                       // first quote of any kind
+  const m=s.match(/[„”"]/);                       
   if(!m) return [s.trim(),''];
   const i=m.index;
   const tip=s.slice(0,i).trim();
@@ -130,7 +129,6 @@ function parsePage(items, pageHeight){
     cy=w.top;
   }
   if(cur.length)lines.push(cur);
-  // per line: name/obs/nums
   const L=lines.map(ln=>{
     const d={top:Math.min(...ln.map(w=>w.top)),name:[],obs:[],nums:{}};
     ln.slice().sort((a,b)=>a.x-b.x).forEach(w=>{
@@ -177,7 +175,6 @@ $('convert').onclick=async()=>{
     fill.style.width=(p/pdf.numPages*100)+'%';
     $('status').textContent=`Procesare pagina ${p}/${pdf.numPages}… rânduri găsite: ${rows.length}`;
   }
-  // renumber + finalize
   $('status').textContent=`Gata: ${rows.length} specializări, ${new Set(rows.map(r=>r[0])).size} școli.`;
   renderPreview();
   renderNameFixes();
@@ -213,7 +210,6 @@ $('download').onclick=()=>{
   XLSX.writeFile(wb,"Admitere_2026_Bucuresti.xlsx");
 };
 
-// Build records as named objects (same 15 fields as the Excel + the table columns)
 function buildRecords(){
   return rows.map((r,i)=>{
     const [tip,nume]=splitSchool(r[0]);
@@ -227,7 +223,6 @@ function buildRecords(){
   });
 }
 
-// Show editable Tip + Nume for every school whose Nume scoala is empty.
 function renderNameFixes(){
   const recs=buildRecords();
   const empties=[...new Set(recs.filter(r=>r.nume_scoala==='').map(r=>r.tip_scoala))];
@@ -243,7 +238,6 @@ function renderNameFixes(){
   wrap.style.display='block';
 }
 
-// Apply the edited Tip + Nume onto the matching empty-name records.
 function applyNameFixes(recs){
   const map={};
   document.querySelectorAll('#fixList .fix-row').forEach(row=>{
@@ -254,7 +248,7 @@ function applyNameFixes(recs){
   });
   recs.forEach(r=>{
     if(r.nume_scoala==='' && map[r.tip_scoala]){
-      const f=map[r.tip_scoala];          // keyed by original tip
+      const f=map[r.tip_scoala];        
       if(f.nume) r.nume_scoala=f.nume;
       if(f.tip)  r.tip_scoala=f.tip;
     }
