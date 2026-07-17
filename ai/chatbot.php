@@ -796,22 +796,23 @@ if (count($results) === 0) {
     </div>
 
     <nav>
-      <a href="autentificare.html#register">Înregistrare</a>
-      <a href="autentificare.html">Autentificare</a>
+      <a href="login.php">Contul meu</a>
     </nav>
   </header>
 
   <div class="sidebar" id="sidebar">
     <button class="close-btn" id="closeBtn">✕</button>
 
-    <a href="acasa.html">Acasă</a>
-    <a href="licee.html">Toate liceele</a>
-    <a href="specializari.html">Specializări</a>
-    <a href="test.html">Test de orientare</a>
-    <a href="evenimente.html">Evenimente și noutăți</a>
-    <a href="chatbot.php">Chatbot AI</a>
-    <a href="despre.html">Despre noi</a>
-    <a href="contact.html">Contact</a>
+    <a href="/index.php">Acasă</a>
+    <a href="/licee_general.php">Toate Liceele</a>
+    <a href="/licee_specializari.php">Specializări</a>
+    <a href="/licee_admitere.php">Admitere</a>
+    <a href="/specializari.php">Informații utile</a>
+    <a href="/ai/chatbot.php">Chatbot AI</a>
+    <a href="/test.php">Test de orientare</a>
+    <a href="/evenimente.php">Evenimente și noutăți</a>
+    <a href="/despre.php">Despre noi</a>
+    <a href="/contact.php">Contact</a>
   </div>
 
   <main class="chat-page">
