@@ -6,10 +6,8 @@
             </button>
             <h1 class="dashboard-header-title" id="dashboardTitle"><?=  lang('OVERVIEW') ?></h1>
           </div>
-          <!-- Header Actions -->
           <div class="dashboard-header-actions">
 
-            <!-- User Profile -->
             <div class="user-menu" id="userMenu">
               <div class="user-menu-trigger" id="user-menu-trigger">
                 <div class="user-avatar-small">
@@ -21,7 +19,6 @@
                   <span class="icon material-symbols-rounded">person</span>
                   <span>Profile</span>
                 </a>
-                <!-- Theme Toggle inside dropdown -->
                 <div class="user-menu-item theme-item">
                   <span class="icon material-symbols-rounded">palette</span>
                   <div class="theme-toggle" id="theme-toggle">
