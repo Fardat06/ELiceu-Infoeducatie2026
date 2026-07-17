@@ -73,13 +73,12 @@ const empties = document.querySelectorAll('.empty');
 
  let shuffleElement;
  let shuffleParentElement;
-
-    // Fill listeners
+	
     for (const fill of fills) {
         fill.addEventListener('dragstart', dragStart);
         fill.addEventListener('dragend', dragEnd);
     }
-    // Loop through empty boxes and add listeners
+
     for (const empty of empties) {
         empty.addEventListener('dragover', dragOver);
         empty.addEventListener('dragenter', dragEnter);
@@ -87,7 +86,6 @@ const empties = document.querySelectorAll('.empty');
         empty.addEventListener('drop', dragDrop);
     }
 
-    // Drag Functions
     function dragStart(e) {
         this.className += ' hold';
         setTimeout(() => (this.className = 'invisible'), 0);
