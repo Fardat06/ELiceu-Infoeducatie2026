@@ -4,15 +4,12 @@ ob_start();
 session_start();
 
 $noNavbar = '';
-/** @var PDO $con */
 global $con;
 
 $pageTitle1 = 'LOGIN';
 
-// id from query string, forced to an integer (used to exclude self on edit)
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
-// Already logged in -> go to dashboard
 if (isset($_SESSION['username'])) {
     header('Location: index.php');
     exit;
@@ -21,34 +18,17 @@ if (isset($_SESSION['username'])) {
 include 'plugin/init.php';
 include 'plugin/otp.php';   // generateOtp(), hashOtp(), issueOtp(), clearOtp()
 
-/*
- * Legacy password scheme that older accounts were stored with:
- *   md5($password . md5(313))
- * Kept ONLY so existing users can still log in; on success their hash is
- * silently upgraded to a modern password_hash() value.
- */
+
 function legacyHash(string $password): string
 {
     return md5($password . md5(313));
 }
 
-/*
- * Strongest hashing algorithm available on this server.
- * Argon2id (memory-hard, current OWASP first choice) when PHP was built with
- * libargon2; bcrypt otherwise. Verification via password_verify() works for
- * any of these automatically, so accounts created under either algorithm are
- * always accepted.
- */
 function passwordAlgo()
 {
     return defined('PASSWORD_ARGON2ID') ? PASSWORD_ARGON2ID : PASSWORD_BCRYPT;
 }
 
-/*
- * Cost parameters. Tune to your hardware: aim for ~0.25–0.5s per hash.
- *   - Argon2id: memory_cost in KiB, time_cost = iterations, threads.
- *   - bcrypt:   cost = work factor (each +1 doubles the work).
- */
 function passwordOptions(): array
 {
     if (defined('PASSWORD_ARGON2ID')) {
@@ -67,10 +47,6 @@ function hashPassword(string $password): string
     return password_hash($password, passwordAlgo(), passwordOptions());
 }
 
-/*
- * Safe existence check. Column is whitelisted; value and id are bound,
- * so nothing from the user is ever concatenated into the SQL.
- */
 function userExists($con, string $column, string $value, int $excludeId = 0): bool
 {
     $allowed = ['username', 'email'];
@@ -90,25 +66,22 @@ function userExists($con, string $column, string $value, int $excludeId = 0): bo
     return $stmt->rowCount() > 0;
 }
 
-// CSRF token (one per session)
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-$loginError      = '';   // shown inside the login panel
-$registerErrors  = [];   // shown inside the register panel
+$loginError      = '';   
+$registerErrors  = [];   
 $registerSuccess = '';
-$showRegister    = false; // open the register panel on reload when relevant
+$showRegister    = false; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // CSRF check for any POST
     $token = $_POST['csrf_token'] ?? '';
     if (!hash_equals($_SESSION['csrf_token'], $token)) {
         $loginError = '<div class="message warning">Sesiune expirată. Reîncarcă pagina și încearcă din nou.<span class="close">&times;</span></div>';
     } elseif (!isset($_POST['reg'])) {
 
-        /* ---------------------- LOGIN ---------------------- */
 
         $username = trim($_POST['user'] ?? '');
         $password = $_POST['pass'] ?? '';
@@ -116,7 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($username === '' || $password === '') {
             $loginError = '<div class="message warning">Completează numele de utilizator și parola.<span class="close">&times;</span></div>';
         } else {
-            // email + first_name sunt necesare pentru emailul cu codul OTP
             $stmt = $con->prepare(
                 "SELECT id, username, email, first_name, password, is_active
                    FROM " . DB_PREFIX . "user_details
@@ -133,10 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stored = (string) $row['password'];
 
                 if (password_verify($password, $stored)) {
-                    // Already a modern hash
                     $authenticated = true;
 
-                    // Re-hash if the algorithm or cost parameters changed
                     if (password_needs_rehash($stored, passwordAlgo(), passwordOptions())) {
                         $upd = $con->prepare(
                             "UPDATE " . DB_PREFIX . "user_details SET password = ? WHERE id = ?"
@@ -144,7 +114,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $upd->execute([hashPassword($password), $row['id']]);
                     }
                 } elseif (hash_equals($stored, legacyHash($password))) {
-                    // Old MD5 account -> verify, then upgrade transparently
                     $authenticated = true;
 
                     $upd = $con->prepare(
@@ -155,11 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($authenticated) {
-                /*
-                 * Parola e corectă, dar sesiunea de login NU se creează încă.
-                 * Marcăm userul ca "în așteptare" și îi trimitem codul pe email.
-                 * Sesiunea reală se face în verify-otp.php, după codul corect.
-                 */
+                
                 $_SESSION['pending_user_id'] = (int) $row['id'];
                 $_SESSION['otp_last_sent']   = time();
 
@@ -179,7 +144,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } else {
 
-        /* -------------------- REGISTER --------------------- */
 
         $showRegister = true;
 
@@ -261,17 +225,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mail($emailaddres, $subject, $message, $headers, '-f' . $fromEmail);
 
             $registerSuccess = '<div class="message success">Verifică-ți emailul pentru a-ți activa contul.<span class="close">&times;</span></div>';
-            $showRegister    = false; // send them to the login panel
+            $showRegister    = false; 
         }
     }
 }
 
-// Mesaj după resetarea parolei (redirect din reset-password.php)
 if (isset($_GET['reset'])) {
     $registerSuccess = '<div class="message success">Parola a fost schimbată. Te poți autentifica.<span class="close">&times;</span></div>';
 }
 
-// Helper for safely echoing into HTML attributes/text
 function e(?string $value): string
 {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
@@ -285,18 +247,15 @@ $_SESSION['stylecss1'] = 'licee_general_mobile.css';
 $_SESSION['pagename']  = 'login-page';
 $pageTitle             = 'Autentificare';
 
-// Shared site header (top bar + slide-in sidebar). Opens <html>, <head>, <body>.
 include 'template/header.php';
 ?>
 
-<!-- Boxicons for the input-field icons used below -->
 <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
     <div class="wrapper">
 
         <div class="form-box" style="height: 700px;">
 
-            <!-- AUTENTIFICARE -->
             <div class="login-container" id="login">
 
                 <form class="login" action="login.php" autocomplete="off" method="POST">
@@ -310,25 +269,21 @@ include 'template/header.php';
                     <?php echo $loginError; ?>
                     <?php echo $registerSuccess; ?>
 
-                    <!-- Username / Email -->
                     <div class="input-box">
                         <input type="text" class="input-field" name="user"
                             placeholder="Numele utilizatorului sau email-ul">
                         <i class="bx bx-user"></i>
                     </div>
 
-                    <!-- Parola -->
                     <div class="input-box">
                         <input type="password" class="input-field" name="pass" placeholder="Parolă">
                         <i class="bx bx-lock-alt"></i>
                     </div>
 
-                    <!-- Buton -->
                     <div class="input-box">
                         <input type="submit" class="submit" value="Autentificare">
                     </div>
 
-                    <!-- Checkbox + Termeni -->
                     <div class="two-col">
                         <div class="one">
                             <input type="checkbox" id="login-check">
@@ -341,7 +296,6 @@ include 'template/header.php';
                 </form>
             </div>
 
-            <!-- INREGISTRARE -->
             <div class="register-container" id="register">
                 <form class="login" action="login.php" autocomplete="off" method="POST">
                     <input type="hidden" name="csrf_token" value="<?php echo e($_SESSION['csrf_token']); ?>">
@@ -356,7 +310,6 @@ include 'template/header.php';
                         <div class="message warning"><?php echo $error; ?><span class="close">&times;</span></div>
                     <?php endforeach; ?>
 
-                    <!-- Nume + Prenume -->
                     <div class="two-forms">
                         <div class="input-box">
                             <input type="text" name="lname" class="input-field" placeholder="Nume" required>
@@ -368,19 +321,16 @@ include 'template/header.php';
                         </div>
                     </div>
 
-                    <!-- Username -->
                     <div class="input-box">
                         <input type="text" name="uname" class="input-field" placeholder="Username" required>
                         <i class="bx bx-user"></i>
                     </div>
 
-                    <!-- Email -->
                     <div class="input-box">
                         <input type="email" name="email" class="input-field" placeholder="Email" required>
                         <i class="bx bx-envelope"></i>
                     </div>
 
-                    <!-- Parola -->
                     <div class="input-box">
                         <input type="password" name="pass1"
                             pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
@@ -397,12 +347,10 @@ include 'template/header.php';
                         <i class="bx bx-lock-alt"></i>
                     </div>
 
-                    <!-- Buton -->
                     <div class="input-box">
                         <input type="submit" class="submit" value="Înregistrare">
                     </div>
 
-                    <!-- Checkbox + Termeni -->
                     <div class="two-col">
                         <div class="one">
                             <input type="checkbox" id="register-check">
@@ -419,7 +367,6 @@ include 'template/header.php';
     </div>
 
     <script>
-// Close button
 document.querySelectorAll('.close').forEach(btn => {
 
     btn.addEventListener('click', function(){
@@ -434,7 +381,6 @@ document.querySelectorAll('.close').forEach(btn => {
 
 });
 
-// Auto close after 7 seconds
 document.querySelectorAll('.message').forEach(box => {
 
     setTimeout(() => {
@@ -448,7 +394,6 @@ document.querySelectorAll('.message').forEach(box => {
 });
 
 
-// ===== Slide between the login and register panels =====
         var a = document.getElementById("loginBtn");    // may be null (nav removed)
         var b = document.getElementById("registerBtn"); // may be null
         var x = document.getElementById("login");
@@ -473,7 +418,6 @@ document.querySelectorAll('.message').forEach(box => {
         }
 
 
-        // Open the register panel if registration failed, or via #register hash
         <?php if ($showRegister): ?>
         register();
         <?php else: ?>
