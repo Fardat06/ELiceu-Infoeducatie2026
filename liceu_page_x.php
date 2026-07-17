@@ -1,7 +1,6 @@
 <?php
 include 'plugin/function.php';
-//   ob_start("sanitize_output"); // Output buffering start
-ob_start(); // Output buffering start
+ob_start();
 session_start();
 $pageTitle1 = 'High school';
 include 'plugin/init.php';
@@ -16,9 +15,6 @@ $id = $_GET['id'];
         $stmt->execute(array($id));
         $rows = $stmt->fetch();
         $s_name = $rows['name'];
-
-
-
 
           $stmt1 = $con->prepare("SELECT * FROM " . DB_PREFIX . "liceu  WHERE name = ? AND stopx = 0");
           $stmt1->execute(array($s_name));
@@ -44,7 +40,6 @@ $id = $_GET['id'];
 
 <div class="page-wrapper">
 
-  <!-- BREADCRUMB -->
   <div class="breadcrumb">
     <a href="index.php">Acasă</a>
     <span>›</span>
@@ -55,7 +50,6 @@ $id = $_GET['id'];
 
   <div class="product-main">
 
-    <!-- HERO: gallery + info -->
     <div class="product-top">
 
       <div class="gallery-col fade-in">
@@ -103,10 +97,8 @@ $id = $_GET['id'];
       </div>
     </div>
 
-    <!-- BOTTOM: specs left, admitere right -->
     <div class="bottom-grid"> 
 
-      <!-- SPECIFICAȚII -->
       <div class="section-block fade-in fade-in-2">
         <div class="section-header">
           <h2>Specificații</h2>
@@ -156,7 +148,6 @@ $id = $_GET['id'];
         </div>
       </div>
 
-      <!-- ISTORICUL ADMITERII -->
       <div class="section-block fade-in fade-in-3">
         <div class="section-header">
           <h2>Istoricul Admiterii</h2>
@@ -168,7 +159,6 @@ $id = $_GET['id'];
             <button class="adm-tab" onclick="switchTab('pozitii',this)">Arhivă poziții</button>
           </div>
 
-          <!-- MEDII -->
           <div id="tab-medii">
             <p style="font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:14px;">Ultima medie acceptată pe specializare și an</p>
             <div class="admitere-table-wrap">
@@ -206,7 +196,6 @@ $id = $_GET['id'];
             
           </div>
 
-          <!-- POZITII -->
           <div id="tab-pozitii" style="display:none;">
             <p style="font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:14px;">Locul în ierarhia din București al ultimului elev admis pe fiecare specializare</p>
             <div class="admitere-table-wrap">
@@ -246,7 +235,7 @@ $id = $_GET['id'];
         </div>
       </div>
 
-    </div><!-- /bottom-grid -->
+    </div>
 
   </div><!-- /product-main -->
 
