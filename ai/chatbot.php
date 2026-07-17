@@ -108,8 +108,6 @@ for ($incercare = 1; $incercare <= $maxIncercari; $incercare++) {
             return $prediction;
         }
     }
-
-    // Salvează cauza reală în logul PHP/XAMPP.
     error_log(
         "Eroare AI pentru codul " .
         $row["cod_specializare"] .
@@ -117,8 +115,6 @@ for ($incercare = 1; $incercare <= $maxIncercari; $incercare++) {
         " | cURL: " . $curlError .
         " | răspuns: " . $response
     );
-
-    // Așteaptă puțin înainte de a doua încercare.
     if ($incercare < $maxIncercari) {
         usleep(500000);
     }
@@ -275,7 +271,6 @@ foreach ($toateLiceele as $liceu) {
 
     $numeComplet = trim($tipNormalizat . " " . $numeNormalizat);
 
-    // Doar dacă utilizatorul a scris numele COMPLET al liceului
     if (strpos(" ".$textNormalizat." ", " ".$numeComplet." ") !== false) {
         $liceuGasit = $liceu;
         break;
