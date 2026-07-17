@@ -16,7 +16,6 @@ if (!$row1) {
 $lista       = $row1['lista_s'];
 $emailaddres = $row1['email'];
 
-// Build the rows
 $rowsHtml = '';
 $pos = 0;
 
@@ -50,7 +49,6 @@ if ($pos === 0) {
               . 'Lista ta este goală.</td></tr>';
 }
 
-// HTML email body (inline styles — most email clients ignore <style> blocks)
 $th = 'style="border:1px solid #1f2d3d;padding:10px;font-size:14px;text-align:left;"';
 $message = '
 <html>
@@ -74,7 +72,6 @@ $message = '
 </body>
 </html>';
 
-// Subject (MIME-encode so diacritics display correctly)
 $subjectText = 'Lista mea școlară';
 $subject = '=?UTF-8?B?' . base64_encode($subjectText) . '?=';
 
@@ -86,7 +83,6 @@ $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
 $headers .= "From: $fromName <$fromEmail>\r\n";
 $headers .= "Reply-To: $fromEmail\r\n";
 
-// The 5th arg sets the envelope sender (helps deliverability / SPF on many hosts)
 if (mail($emailaddres, $subject, $message, $headers, '-f' . $fromEmail)) {
     echo '<div class="message success">Lista a fost trimisă pe email.<span class="close">&times;</span></div>';
 } else {
