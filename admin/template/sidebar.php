@@ -29,7 +29,6 @@
             </a>
           </div>
         </nav>
-        <!-- Back to Site Button -->
         <div class="sidebar-footer">
           <a href="#" class="btn btn-secondary sidebar-back-button">
             <span class="material-symbols-rounded">home</span>
