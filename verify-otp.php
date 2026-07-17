@@ -5,16 +5,11 @@ session_start();
 
 global $con;
 
-// Deja autentificat complet
 if (isset($_SESSION['username'])) {
     header('Location: index.php');
     exit;
 }
 
-/*
- * Aici se ajunge DOAR după ce parola a fost verificată în login.php.
- * pending_user_id e dovada acelui pas; fără el, nu are ce căuta nimeni aici.
- */
 if (empty($_SESSION['pending_user_id'])) {
     header('Location: login.php');
     exit;
@@ -54,7 +49,6 @@ if (!$user) {
 $error   = '';
 $success = '';
 
-// Email mascat, ca utilizatorul să știe unde să caute fără să expunem adresa
 $maskedEmail = preg_replace_callback(
     '/^(.)(.*)(@.*)$/u',
     fn($m) => $m[1] . str_repeat('*', max(1, mb_strlen($m[2]))) . $m[3],
@@ -70,9 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } elseif (isset($_POST['resend'])) {
 
-        /* ------------------ RETRIMITE CODUL ------------------ */
 
-        // Anti-spam: maximum un email la 60 de secunde
         $lastSent = $_SESSION['otp_last_sent'] ?? 0;
 
         if (time() - $lastSent < 60) {
@@ -85,9 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } else {
 
-        /* ------------------ VERIFICĂ CODUL ------------------- */
 
-        $code = preg_replace('/\D/', '', $_POST['otp'] ?? ''); // păstrăm doar cifrele
+        $code = preg_replace('/\D/', '', $_POST['otp'] ?? '');
 
         if ($code === '') {
             $error = 'Introdu codul primit pe email.';
@@ -101,13 +92,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         } elseif (hash_equals((string) $user['otp_hash'], hashOtp($code))) {
 
-            /* ---------------- COD CORECT -> LOGIN ---------------- */
-
             clearOtp($con, (int) $user['id']);
 
             unset($_SESSION['pending_user_id'], $_SESSION['otp_last_sent']);
 
-            session_regenerate_id(true); // prevenim session fixation
+            session_regenerate_id(true); 
 
             $urlParts = explode('/', $_SERVER['REQUEST_URI']);
             $_SESSION['dir']      = $urlParts[1] ?? '';
@@ -119,7 +108,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         } else {
 
-            // Cod greșit -> incrementăm contorul
             $upd = $con->prepare(
                 "UPDATE " . DB_PREFIX . "user_details
                     SET otp_attempts = otp_attempts + 1
@@ -139,7 +127,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Secundele rămase, pentru numărătoarea inversă din pagină
 $secondsLeft = 0;
 if (!empty($user['otp_expires_at'])) {
     $secondsLeft = max(0, strtotime((string) $user['otp_expires_at']) - time());
@@ -196,7 +183,6 @@ include 'template/header.php';
                 <p id="countdown" style="text-align:center; font-size:13px; color:#666; margin-top:6px;"></p>
             </form>
 
-            <!-- Retrimitere: formular separat, ca să nu declanșeze validarea codului -->
             <form action="verify-otp.php" method="POST" style="text-align:center; margin-top:6px;">
                 <input type="hidden" name="csrf_token" value="<?php echo e($_SESSION['csrf_token']); ?>">
                 <input type="hidden" name="resend" value="1">
@@ -218,8 +204,6 @@ document.querySelectorAll('.close').forEach(btn => {
         setTimeout(() => box.remove(), 600);
     });
 });
-
-// Numărătoare inversă până la expirarea codului
 let left = <?php echo (int) $secondsLeft; ?>;
 const el = document.getElementById('countdown');
 
