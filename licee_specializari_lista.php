@@ -1,7 +1,6 @@
 <?php
 include 'plugin/function.php';
-//   ob_start("sanitize_output"); // Output buffering start
-ob_start(); // Output buffering start
+ob_start(); 
 session_start();
 $pageTitle1 = 'High school';
 include 'plugin/init.php';
@@ -14,11 +13,6 @@ unset($_SESSION['stylecss']);
 $_SESSION['stylecss']  = 'liceu.css';
 $_SESSION['pagename']  = '';
 
-/* --------------------------------------------------------------
- * Mobile helper — filter-count badge on the FAB.
- * Guarded so it doesn't collide with the same helper defined in
- * the other listing pages if includes ever run in the same session.
- * -------------------------------------------------------------- */
 if (!function_exists('count_active_filters')) {
     function count_active_filters() {
         $n = 0;
@@ -36,12 +30,11 @@ $active_filter_count = count_active_filters();
 
 include 'template/header.php';
 ?>
-<!-- Mobile overlay stylesheet — shared with the other listing pages. -->
+
 <link rel="stylesheet" href="src/css/licee_general_mobile.css">
 
 <div class="overlay" id="overlay"></div>
 
-<!-- MOBILE FILTER DRAWER -->
 <div class="filter-drawer" id="filterDrawer">
   <div class="filter-drawer-backdrop" id="drawerBackdrop"></div>
   <div class="filter-drawer-panel" id="drawerPanel">
@@ -52,10 +45,8 @@ include 'template/header.php';
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast">✓ Adăugat la lista ta!</div>
 
-<!-- PAGE -->
 <div class="page-wrapper">
   <div class="breadcrumb">
     <a href="index.php">Acasă</a>
@@ -71,7 +62,6 @@ include 'template/header.php';
     <div class="banner-badge">15+ Licee disponibile</div>
   </div>
 
-  <!-- COMPARE BAR -->
   <div class="compare-bar sticky" id="compareBar" >
     <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap ;margin-left: 93%;padding-top: 10px;">
       <span style="font-weight:900">Comparare:</span>
@@ -102,7 +92,6 @@ include 'template/header.php';
   </div>
 
   <div class="shop-main">
-    <!-- FILTER SIDEBAR (desktop; hidden on mobile via existing @media rule in liceu.css) -->
     <form id="filterForm_y">
       <aside class="filter-sidebar" id="filterSidebar">
         <input type="text" name="mylist" value="1" hidden>
@@ -233,7 +222,6 @@ include 'template/header.php';
       </aside>
     </form>
 
-    <!-- GRID AREA -->
     <div class="grid-area">
       <div class="active-filters" id="activePills"></div>
 
