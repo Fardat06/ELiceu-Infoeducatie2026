@@ -1,0 +1,128 @@
+<style>
+.red {
+   background: red;
+}
+
+.green {
+   background: green;
+}
+
+.fill {
+  position: relative;
+  height: 150px;
+  width: 150px;
+  top: 5px;
+  left: 5px;
+  cursor: pointer;
+}
+
+.hold {
+  border: solid 5px #ccc;
+}
+
+.empty {
+  display: inline-block;
+  height: 160px;
+  width: 160px;
+  margin: 10px;
+  border: solid 3px salmon;
+  background: white;
+}
+
+.hovered {
+  background: #f4f4f4;
+  border-style: dashed;
+}
+
+
+
+</style>
+
+<div id="containerxx">
+    <div class="empty">
+		  <div class="fill" style="background: red" draggable="true"></div>
+	  </div>
+
+	  <div class="empty">
+		  <div class="fill" style="background: green" draggable="true"> </div>
+	  </div>
+	  <div class="empty">
+		  <div class="fill" style="background: blue" draggable="true">
+      <div><span>A B C </span> </div>
+      
+      </div>
+	  </div>
+
+  <div class="empty">
+    <div class="fill" style="background: black" draggable="true"> </div>    
+  </div>
+  <div class="empty">
+    <div class="fill" style="background: BlueViolet" draggable="true"> </div>    
+    
+  </div>
+  <div class="empty">
+    <div class="fill" style="background: DarkCyan" draggable="true"> </div>    
+    
+  </div>
+</div>
+
+
+<script>
+const fills = document.querySelectorAll('.fill');
+const empties = document.querySelectorAll('.empty');
+
+ let shuffleElement;
+ let shuffleParentElement;
+
+    // Fill listeners
+    for (const fill of fills) {
+        fill.addEventListener('dragstart', dragStart);
+        fill.addEventListener('dragend', dragEnd);
+    }
+    // Loop through empty boxes and add listeners
+    for (const empty of empties) {
+        empty.addEventListener('dragover', dragOver);
+        empty.addEventListener('dragenter', dragEnter);
+        empty.addEventListener('dragleave', dragLeave);
+        empty.addEventListener('drop', dragDrop);
+    }
+
+    // Drag Functions
+    function dragStart(e) {
+        this.className += ' hold';
+        setTimeout(() => (this.className = 'invisible'), 0);
+        shuffleElement = e.currentTarget;
+        shuffleParentElement = e.currentTarget.parentElement;
+    }
+
+    function dragEnd() {
+        this.className = 'fill';
+    }
+
+    function dragOver(e) {
+        e.preventDefault();
+    }
+
+    function dragEnter(e) {
+        e.preventDefault();
+        this.className += ' hovered';
+    }
+
+    function dragLeave() {
+        this.className = 'empty';
+    }
+
+     function dragDrop() {
+        this.className = 'empty';
+		    const shuffleWithElement = this.querySelector('.fill');
+		
+		    this.innerHTML = '';
+        this.append(shuffleElement);
+		
+        if(shuffleWithElement) {
+          shuffleParentElement.innerHTML = '';
+          shuffleParentElement.append(shuffleWithElement);
+        }
+    }
+
+</script>
