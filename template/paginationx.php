@@ -45,7 +45,6 @@ if (!empty($_GET['profil'])) {
     foreach ($_GET['profil'] as $index => $profil) {
         $key = "'".$profil."'";
         $profilPlaceholders[] = $key;
-       // $params[$key] = $profil;
     }
     $stmt .= " AND hl.profil IN (" . implode(",", $profilPlaceholders) . ")";
 }
@@ -126,12 +125,6 @@ $stmt1 = $con->prepare($stmt3);
 $stmt1->execute();
 
 
-/* PAGINATION CONTROLS
- * .pg-prev / .pg-next → Prev/Next
- * .pg-num → numeric page links
- * .pg-current → current page indicator
- * All also carry .table_btn so existing desktop styles apply.
- */
 $paginationCtrls = '';
 if ($last != 1) {
     $currentParams = $_GET;
@@ -234,8 +227,6 @@ if ($last != 1) {
         }
         ?>
 
-        <!-- Inline styles here are for desktop positioning; mobile CSS
-             overrides both via !important, so they're a no-op on ≤680px. -->
         <span class="results-count" style="position: absolute; margin-top: -50px;">
           Afișez <strong id="countShown">
             <?php
@@ -247,7 +238,6 @@ if ($last != 1) {
         </span>
       </div>
 
-  <!-- COMPARE BAR -->
   <div class="compare-panel" id="compareBar">
     <div class="compare-panel-header">
       <span>Compară</span>
