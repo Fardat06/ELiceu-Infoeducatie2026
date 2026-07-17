@@ -1,7 +1,3 @@
-// compare_bar.js
-// Renders the floating "Compară" panel from localStorage 'compareIds' as a
-// list of rows (school name + remove ✕), no thumbnail. Works alongside the
-// existing checkNr() add buttons. Include this AFTER liceu.js on the page.
 (function () {
   function getIds() {
     try { return JSON.parse(localStorage.getItem("compareIds") || "[]"); }
@@ -12,11 +8,6 @@
     return (s || "").replace(/[&<>"]/g, c =>
       ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   }
-
-  // School name for an id. Checks the localStorage cache first (populated by
-  // checkNr() in liceu.js at add-time), since the card for this id may not
-  // be on the current page (e.g. it was added on page 1, we're on page 2).
-  // Falls back to reading the DOM card if it's present but not yet cached.
   function nameFor(id) {
     let names = {};
     try { names = JSON.parse(localStorage.getItem("compareNames") || "{}"); }
@@ -61,7 +52,6 @@
     render();
   }
 
-  // Delegated handlers (survive AJAX re-rendering of the results list).
   document.addEventListener("click", function (e) {
     if (!e.target.closest) return;
     const x = e.target.closest(".compare-row-x");
@@ -69,12 +59,10 @@
     if (e.target.closest("#compareToggle")) {
       document.getElementById("compareBar").classList.toggle("collapsed"); return;
     }
-    // re-render after a card "Compară" button toggles compareIds
     const add = e.target.closest(".add-btn");
     if (add && /checkNr\(/.test(add.getAttribute("onclick") || "")) setTimeout(render, 0);
   });
 
-  // Re-render whenever the AJAX results list is replaced.
   function watchLoading() {
     const loading = document.getElementById("loading");
     if (loading) new MutationObserver(() => render()).observe(loading, { childList: true });
