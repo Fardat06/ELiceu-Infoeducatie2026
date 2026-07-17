@@ -1,5 +1,4 @@
 <?php
-// Database
 if (!defined('DB_DRIVER')) {
     define('DB_DRIVER', 'mysqli');
 }
