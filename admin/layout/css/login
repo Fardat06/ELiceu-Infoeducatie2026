@@ -100,7 +100,6 @@ input::placeholder {
     }
 }
 
-/* button */
 .btn {
   margin: 30px;
   padding: 15px 40px;
@@ -123,7 +122,6 @@ input::placeholder {
   top: 0;
   border-radius: 10px;
 }
-/* glow */
 .btn::before {
   content: "";
   background: linear-gradient(
@@ -151,7 +149,7 @@ input::placeholder {
   100% {background-position: 0 0;}
 }
 
-/* hover */
+
 .btn:hover::before {
   opacity: 1;
 }
