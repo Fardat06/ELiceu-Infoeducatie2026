@@ -11,10 +11,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $data    = json_decode(file_get_contents("php://input"), true);
     $message = $data["message"] ?? "";
 
-    /* ------------------------------------------------------------------ */
-    /*  Normalizare text (fără diacritice) – folosită pentru comparații    */
-    /*  sigure indiferent de colația utf16 a tabelelor.                    */
-    /* ------------------------------------------------------------------ */
     function normalizeText($text) {
         $text = strtolower($text);
 
@@ -33,22 +29,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         return trim($text);
     }
 
-    /* Cheie de legătură între home_liceu / home_medie / home_poztion. */
     function joinKey($name, $spec, $bilingv) {
         return normalizeForSearch($name) . "|" .
                normalizeForSearch($spec) . "|" .
                normalizeForSearch($bilingv);
     }
 
-    /* ------------------------------------------------------------------ */
-    /*  Predicție AI. Primește un rând deja îmbinat (cu poziții + medie).   */
-    /* ------------------------------------------------------------------ */
     function getPrediction($medieElev, $pozitieElev, $row, $API_URL) {
         $p2025 = intval($row["u_pozition_2025"] ?? 0);
         $p2024 = intval($row["u_pozition_2024"] ?? 0);
         $p2023 = intval($row["u_pozition_2023"] ?? 0);
 
-        // fără poziții istorice nu putem face predicția
         $aniValizi = array_filter([$p2025, $p2024, $p2023], function ($v) {
             return $v > 0;
         });
@@ -137,7 +128,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $text = normalizeText($message);
 
-    /* ---------------------------- salut ------------------------------- */
+
     if (
         str_contains($text, "salut") ||
         str_contains($text, "buna") ||
@@ -149,7 +140,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
-    /* ------------------- extragerea intențiilor ----------------------- */
     $profiluri    = [];
     $specializari = [];
     $sectoare     = [];
@@ -268,21 +258,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $bilingvuri   = array_unique($bilingvuri);
     $limbi        = array_unique($limbi);
 
-    /* ------------------------------------------------------------------ */
-    /*  Încărcăm catalogul din tabelele REALE (clasa8.sql).                */
-    /*  3 interogări simple, fără WHERE/JOIN pe text -> zero probleme de    */
-    /*  colație utf16. Îmbinarea și filtrarea se fac în PHP, normalizat.    */
-    /* ------------------------------------------------------------------ */
+
     include "init1.php";
 
-    // 1) baza: o linie per specializare
     $stmtL = $con->query("
         SELECT tip, name, profil, specializare, limba, bilingv, zone, address
         FROM {$PREFIX}liceu
     ");
     $catalog = $stmtL->fetchAll(PDO::FETCH_ASSOC);
 
-    // 2) ultima medie de intrare (2025)
     $medieMap = [];
     $stmtM = $con->query("
         SELECT name, specializare, bilingv, u_medie_2025
@@ -293,7 +277,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $medieMap[$k] = $m["u_medie_2025"];
     }
 
-    // 3) ultimele poziții de intrare + cod broșură
     $pozMap = [];
     $stmtP = $con->query("
         SELECT name, specializare, bilingv,
@@ -306,7 +289,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $pozMap[$k] = $p;
     }
 
-    /* ------------------- detectăm un liceu anume ---------------------- */
     $textNormalizat = normalizeForSearch($text);
     $liceuGasit     = null;
     $vazute         = [];
@@ -325,9 +307,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 
-    /* ------------------------------------------------------------------ */
-    /*  Filtrare în PHP (diacritic-safe) + îmbinare cu medii și poziții.    */
-    /* ------------------------------------------------------------------ */
+
     $profilSet  = array_map('normalizeForSearch', $profiluri);
     $specSet    = array_map('normalizeForSearch', $specializari);
     $limbaSet   = array_map('normalizeForSearch', $limbi);
@@ -345,7 +325,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         foreach ($catalog as $l) {
 
-            // liceu anume
             if ($liceuGasit !== null) {
                 if (
                     normalizeForSearch($l["tip"])  !== normalizeForSearch($liceuGasit["tip"]) ||
@@ -355,32 +334,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }
             }
 
-            // profil
             if (!empty($profilSet) &&
                 !in_array(normalizeForSearch($l["profil"]), $profilSet, true)) {
                 continue;
             }
 
-            // specializare
             if (!empty($specSet) &&
                 !in_array(normalizeForSearch($l["specializare"]), $specSet, true)) {
                 continue;
             }
 
-            // limba
             if (!empty($limbaSet) &&
                 !in_array(normalizeForSearch($l["limba"]), $limbaSet, true)) {
                 continue;
             }
 
-            // sector (din zone: "Sector 3" -> "3")
             $sectorNr = preg_match('/([1-6])/', $l["zone"], $mm) ? $mm[1] : "";
             if ($aplicaSector && !empty($sectoare) &&
                 !in_array($sectorNr, $sectoare, true)) {
                 continue;
             }
 
-            // bilingv (potrivire parțială pe text normalizat)
             $bilingvNorm = normalizeForSearch($l["bilingv"]);
             if (!empty($bilingvSet)) {
                 $ok = false;
@@ -399,15 +373,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 continue;
             }
 
-            // legătură cu medii + poziții
             $k = joinKey($l["name"], $l["specializare"], $l["bilingv"]);
 
             $medie = isset($medieMap[$k]) ? floatval($medieMap[$k]) : 0;
             if ($medie <= 0) {
-                continue; // fără medie nu putem încadra în interval
+                continue; 
             }
 
-            // interval de medie
             if ($medie < $medieMin || $medie > $medieMax) {
                 continue;
             }
@@ -436,12 +408,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $results = $construieste(true);
 
-    // dacă filtrul de sector a golit rezultatele, reîncercăm fără el
     if (count($results) === 0 && !empty($sectoare)) {
         $results = $construieste(false);
     }
 
-    // ordonare: întâi liceele „peste" media elevului, apoi medie descrescător
     usort($results, function ($a, $b) use ($medieElev) {
         $ga = $a["medie_actuala"] > $medieElev ? 0 : 1;
         $gb = $b["medie_actuala"] > $medieElev ? 0 : 1;
@@ -552,11 +522,11 @@ $_SESSION['pagename']  = 'page-home';
     </div>
     <nav>
       <?php if (!isset($_SESSION['ID'])){ ?>
-      <a href="login.php">Contul meu</a>
+      <a href="../login.php">Contul meu</a>
       <?php }else{ ?>
-      <a href="licee_general_lista.php">General</a>
-      <a href="licee_specializari_lista.php">Specializari</a>
-      <a href="logout.php">Logout</a>
+      <a href="../licee_general_lista.php">General</a>
+      <a href="../licee_specializari_lista.php">Specializari</a>
+      <a href="../logout.php">Logout</a>
       <?php } ?>
 
     </nav>
@@ -598,7 +568,7 @@ $_SESSION['pagename']  = 'page-home';
     <section class="chatbot">
       <div class="chatbot-header">
         <h2>Eliceu AI</h2>
-        <p style="color:#fff; margin-bottom:7px;">Model Random Forest pentru predicții de admitere</p>
+        <p>Model Random Forest pentru predicții de admitere</p>
       </div>
 
       <div class="messages" id="messages">
