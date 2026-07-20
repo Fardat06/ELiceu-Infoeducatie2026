@@ -1,21 +1,33 @@
-
 @media (max-width: 1024px) {
   html, body { max-width: 100%; overflow-x: hidden; }
   img, video { max-width: 100%; height: auto; }
 }
 
 
-@media (max-width: 768px) {
-  header { padding: 0 20px; }
-  header .logo-area { gap: 10px; }
+@media (max-width: 900px) {
+  header { padding: 0 24px; }
+  nav { gap: 20px; }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 680px) {
   header { padding: 0 16px; height: 60px; }
-  header .logo { font-size: 24px; }
-  header .menu { font-size: 26px; }
+  nav { gap: 14px; }
+  nav a { font-size: 11px; }
+  .logo { font-size: 26px; }
+  .menu { font-size: 26px; }
+  .logo-area { gap: 10px; }
+
   .page-wrapper { padding-top: 60px; }
-  .sidebar { width: 85vw; max-width: 300px; padding: 90px 26px; }
+
+  .sidebar { width: 280px; padding: 80px 28px; }
+  .sidebar a { font-size: 20px; }
+  .close-btn { top: 20px; right: 22px; font-size: 30px; }
+}
+
+@media (max-width: 380px) {
+  .logo { font-size: 22px; }
+  nav { gap: 8px; }
+  nav a { font-size: 10px; }
 }
 
 @media (max-width: 768px) {
@@ -77,20 +89,23 @@
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+  footer { padding: 60px 24px 70px; }
   .footer-grid,
   body.page-home .footer-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 24px;
   }
-  .footer-grid > div:nth-child(3),
-  body.page-home .footer-grid > div:nth-child(3) {
-    grid-column: 1 / -1;
-  }
 }
-@media (max-width: 480px) {
-  footer { padding: 32px 16px 40px; }
-  .footer-grid, body.page-home .footer-grid { gap: 20px 16px; }
+
+@media (max-width: 680px) {
+  footer { padding: 36px 16px 48px; }
+  .footer-logo { margin-bottom: 16px; }
+  .footer-grid,
+  body.page-home .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
 }
 
 
@@ -123,6 +138,7 @@
   body.page-home .stat-number { font-size: 28px; }
   body.page-home .stat-text { font-size: 14px; }
 }
+
 
 @media (max-width: 600px) {
   .form-box { width: 100%; height: auto; min-height: 480px; overflow: visible; }
