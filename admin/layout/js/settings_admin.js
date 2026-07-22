@@ -48,7 +48,6 @@ $(function () {
   load();
   $('#btnReload').on('click', load);
 
-  /* previzualizare la alegerea fișierului */
   $('#logo_file').on('change', function () {
     if (this.files && this.files[0]) {
       $('#logoPreview').attr('src', URL.createObjectURL(this.files[0])).prop('hidden', false);
@@ -60,7 +59,6 @@ $(function () {
     }
   });
 
-  /* ---------------- salvare ---------------- */
   $('#frmSet').on('submit', function (ev) {
     ev.preventDefault();
     if (!this.checkValidity()) { this.reportValidity(); return; }
