@@ -127,7 +127,6 @@ include __DIR__ . '/template/header.php';
   </main>
 </div>
 
-<!-- ============ modal moderare ============ -->
 <div class="modal-overlay" id="modalForm" hidden>
   <div class="modal-box" style="max-width:760px">
     <input type="hidden" name="csrf" value="<?= e($csrf) ?>">
