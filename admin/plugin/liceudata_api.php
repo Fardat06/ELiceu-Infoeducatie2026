@@ -1,11 +1,8 @@
 <?php
-// admin/plugin/liceudata_api.php — CRUD unificat pentru specializările liceelor
-// home_liceu + home_locuri + home_medie + home_poztion, legate prin ID pozițional
 ob_start();
 require_once __DIR__ . '/admin_init.php';
 if (ob_get_length()) { ob_clean(); }
 
-/** @var PDO $con */
 $L  = DB_PREFIX . 'liceu';
 $LO = DB_PREFIX . 'locuri';
 $M  = DB_PREFIX . 'medie';
@@ -29,7 +26,6 @@ function pDec($k)         { $v = str_replace(',', '.', p($k)); return $v === '' 
 try {
     switch ($action) {
 
-        /* ---------------- LISTĂ ---------------- */
         case 'list':
             $sql = "SELECT l.id, l.tip, l.name, l.profil, l.specializare, l.limba,
                            l.intesiv, l.bilingv, l.city, l.zone, l.address, l.stopx,
@@ -47,13 +43,11 @@ try {
             $rows = $con->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 
             foreach ($rows as &$r) {
-                // rânduri lipsă în tabelele satelit
                 $r['lipsa'] = [];
                 if ($r['locuri_2025']     === null) $r['lipsa'][] = 'locuri';
                 if ($r['u_medie_2025']    === null) $r['lipsa'][] = 'medie';
                 if ($r['u_pozition_2025'] === null) $r['lipsa'][] = 'pozitie';
 
-                // nepotriviri între cheile text redundante (semn de dezaliniere)
                 $r['nealiniat'] = [];
                 if ($r['m_name'] !== null && $r['m_name'] !== $r['name'])  $r['nealiniat'][] = 'medie.name';
                 if ($r['p_name'] !== null && $r['p_name'] !== $r['name'])  $r['nealiniat'][] = 'poztion.name';
@@ -68,7 +62,6 @@ try {
 
             json_out(['data' => $rows]);
 
-        /* ---------------- CITEȘTE UN RÂND COMPLET ---------------- */
         case 'get':
             $id = (int)($_GET['id'] ?? 0);
             if (!$id) json_out(['ok' => false, 'msg' => 'ID lipsă.'], 400);
@@ -92,7 +85,6 @@ try {
                 'pozitie' => $one($P,  'id_poztion'),
             ]);
 
-        /* ---------------- ADAUGĂ ---------------- */
         case 'create':
             $name = p('name');
             $spec = p('specializare');
@@ -101,7 +93,6 @@ try {
 
             $con->beginTransaction();
             try {
-                // 1. rândul principal
                 $st = $con->prepare("
                     INSERT INTO `$L`
                       (tip, name, profil, specializare, limba, intesiv, bilingv,
@@ -118,7 +109,6 @@ try {
                 ]);
                 $newId = (int)$con->lastInsertId();
 
-                // 2-4. rândurile satelit, cu ACELAȘI id (legătura este pozițională)
                 $con->prepare("INSERT INTO `$LO`
                     (id_locuri, locuri_2025, locuri_2024, locuri_2023, locuri_2022, locuri_2021, locuri_2020)
                     VALUES (?,?,?,?,?,?,?)")
@@ -157,7 +147,6 @@ try {
 
             json_out(['ok' => true, 'msg' => 'Specializarea „' . $name . ' – ' . $spec . '” a fost adăugată.']);
 
-        /* ---------------- MODIFICĂ ---------------- */
         case 'update':
             $id = pInt('id');
             if (!$id) json_out(['ok' => false, 'msg' => 'ID lipsă.'], 400);
@@ -188,7 +177,6 @@ try {
                         pInt('stopx') ? 1 : 0, $id,
                     ]);
 
-                // UPSERT pe fiecare tabel satelit — rândul poate lipsi
                 $con->prepare("INSERT INTO `$LO`
                     (id_locuri, locuri_2025, locuri_2024, locuri_2023, locuri_2022, locuri_2021, locuri_2020)
                     VALUES (?,?,?,?,?,?,?)
@@ -248,7 +236,6 @@ try {
 
             json_out(['ok' => true, 'msg' => 'Modificările au fost salvate în toate cele patru tabele.']);
 
-        /* ---------------- ȘTERGE ---------------- */
         case 'delete':
             $id = pInt('id');
             if (!$id) json_out(['ok' => false, 'msg' => 'ID lipsă.'], 400);
@@ -290,7 +277,6 @@ try {
             }
             json_out(['ok' => true, 'msg' => count($ids) . ' specializări șterse (' . $n . ' rânduri).']);
 
-        /* ---------------- ASCUNDE / AFIȘEAZĂ ---------------- */
         case 'toggle_stop':
             $id = pInt('id');
             if (!$id) json_out(['ok' => false, 'msg' => 'ID lipsă.'], 400);
@@ -306,7 +292,6 @@ try {
 
             json_out(['ok' => true, 'msg' => 'Starea a fost actualizată în toate tabelele.']);
 
-        /* ---------------- VERIFICARE INTEGRITATE ---------------- */
         case 'integrity':
             $rep = [];
             $rep['liceu']   = (int)$con->query("SELECT COUNT(*) FROM `$L`")->fetchColumn();
@@ -334,8 +319,7 @@ try {
 
             json_out(['ok' => true, 'raport' => $rep]);
 
-        /* ---------------- lookups ---------------- */
-/* ---------------- lookups: din tabelele de referință ---------------- */
+
         case 'lookups':
             $TN  = DB_PREFIX . 'numa_liceu';
             $TT  = DB_PREFIX . 'tip_liceu';
@@ -355,7 +339,6 @@ try {
                 }
             };
 
-            /** Fallback: valorile deja existente în home_liceu. */
             $own = function (string $col) use ($con, $L) {
                 try {
                     return $con->query("SELECT DISTINCT `$col` FROM `$L`
@@ -366,7 +349,6 @@ try {
                 }
             };
 
-            /** Reunește lista de referință cu valorile deja folosite, ca să nu dispară nimic. */
             $merge = function (array $a, array $b) {
                 $out = array_values(array_unique(array_merge($a, $b), SORT_STRING));
                 usort($out, fn($x, $y) => strcoll($x, $y));
@@ -374,7 +356,6 @@ try {
             };
 
             $bilingv = $merge($ref($TB, 'description'), $own('bilingv'));
-            // „-” înseamnă „fără secție bilingvă” și trebuie să rămână prima opțiune
             $bilingv = array_values(array_diff($bilingv, ['-']));
             array_unshift($bilingv, '-');
 
