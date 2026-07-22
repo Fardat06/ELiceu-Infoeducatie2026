@@ -1,13 +1,9 @@
 <?php
-// admin/plugin/admitere_api.php — CRUD pentru home_admitere_2026 (cheie = id, cheie de business = codificare)
 ob_start();
 require_once __DIR__ . '/admin_init.php';
 if (ob_get_length()) { ob_clean(); }
 
-/** @var PDO $con */
 
-/* Tabelele disponibile pe an. home_admitere (2025) NU are cheie primară,
-   deci este disponibil doar în citire. */
 $YEARS = [
     '2026' => ['table' => DB_PREFIX . 'admitere', 'rw' => true],
     '2025' => ['table' => DB_PREFIX . 'admitere',      'rw' => false],
@@ -81,7 +77,6 @@ function validate(array $f): array
 try {
     switch ($action) {
 
-        /* ---------------- LISTĂ ---------------- */
         case 'list':
             $idCol = $RW ? 'id' : 'codificare';
             $rows = $con->query("
@@ -94,7 +89,6 @@ try {
             ")->fetchAll(PDO::FETCH_ASSOC);
             json_out(['data' => $rows, 'rw' => $RW, 'year' => $year]);
 
-        /* ---------------- CITEȘTE ---------------- */
         case 'get':
             $key = trim((string)($_GET['key'] ?? ''));
             if ($key === '') json_out(['ok' => false, 'msg' => 'Cheie lipsă.'], 400);
@@ -106,7 +100,6 @@ try {
             if (!$row) json_out(['ok' => false, 'msg' => 'Înregistrarea nu a fost găsită.'], 404);
             json_out(['ok' => true, 'row' => $row, 'rw' => $RW]);
 
-        /* ---------------- ADAUGĂ ---------------- */
         case 'create':
             $f   = collect_fields();
             $err = validate($f);
@@ -123,7 +116,6 @@ try {
 
             json_out(['ok' => true, 'msg' => 'Înregistrarea „' . $f['codificare'] . '” a fost adăugată.']);
 
-        /* ---------------- MODIFICĂ ---------------- */
         case 'update':
             $id = (int)p('id');
             if (!$id) json_out(['ok' => false, 'msg' => 'ID lipsă.'], 400);
@@ -136,7 +128,6 @@ try {
             $st->execute([$id]);
             if (!$st->fetch()) json_out(['ok' => false, 'msg' => 'Înregistrarea nu mai există.'], 404);
 
-            // codificare duplicată la alt id?
             $st = $con->prepare("SELECT 1 FROM `$T` WHERE codificare = ? AND id <> ? LIMIT 1");
             $st->execute([$f['codificare'], $id]);
             if ($st->fetch()) json_out(['ok' => false, 'msg' => 'Această codificare este deja folosită.'], 409);
@@ -149,7 +140,6 @@ try {
             $con->prepare("UPDATE `$T` SET " . implode(', ', $set) . " WHERE id = :id")->execute($params);
             json_out(['ok' => true, 'msg' => 'Modificările au fost salvate.']);
 
-        /* ---------------- ȘTERGE ---------------- */
         case 'delete':
             $id = (int)p('id');
             if (!$id) json_out(['ok' => false, 'msg' => 'ID lipsă.'], 400);
@@ -160,7 +150,6 @@ try {
                 'msg' => $st->rowCount() ? 'Înregistrarea a fost ștearsă.' : 'Nu s-a șters nimic.',
             ]);
 
-        /* ---------------- ȘTERGERE MULTIPLĂ ---------------- */
         case 'bulk_delete':
             $ids = $_POST['ids'] ?? [];
             if (!is_array($ids) || !$ids) json_out(['ok' => false, 'msg' => 'Nicio selecție.'], 400);
@@ -172,7 +161,6 @@ try {
             $st->execute($ids);
             json_out(['ok' => true, 'msg' => $st->rowCount() . ' înregistrare(i) șterse.']);
 
-        /* ---------------- liste pentru selecturi ---------------- */
         case 'lookups':
             $col = function (string $c) use ($con, $T) {
                 return $con->query("SELECT DISTINCT `$c` FROM `$T`
