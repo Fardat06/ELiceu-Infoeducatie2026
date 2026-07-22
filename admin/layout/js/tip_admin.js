@@ -1,4 +1,3 @@
-/* admin/layout/js/tip_admin.js — CRUD home_tip_liceu */
 $(function () {
 
   const API = (typeof window.API !== 'undefined') ? window.API : 'plugin/tip_api.php';
@@ -35,7 +34,6 @@ $(function () {
     setTimeout(() => $el.fadeOut(200, function () { $(this).remove(); }), 5000);
   }
 
-  /* ---------------- DataTable ---------------- */
   const dt = $('#tbl').DataTable({
     ajax: { url: API + '?action=list', dataSrc: 'data' },
     pageLength: 25,
@@ -91,7 +89,6 @@ $(function () {
   }
   dt.on('xhr', () => setTimeout(() => stats(dt), 0));
 
-  /* filtru folosit / nefolosit */
   $.fn.dataTable.ext.search.push(function (settings, data, idx) {
     const v = $('#fUsed').val();
     if (!v) return true;
@@ -100,7 +97,6 @@ $(function () {
   });
   $('#fUsed').on('change', () => dt.draw());
 
-  /* ---------------- selecție ---------------- */
   function refreshSel() {
     $('#selCount').text(selected.size);
     $('#btnBulkDelete').prop('disabled', selected.size === 0);
@@ -122,7 +118,6 @@ $(function () {
     refreshSel();
   });
 
-  /* ---------------- ADAUGĂ ---------------- */
   $('#btnAdd').on('click', function () {
     $('#frm')[0].reset();
     $('#fAction').val('create');
@@ -132,7 +127,6 @@ $(function () {
     setTimeout(() => $('#fDesc').trigger('focus'), 50);
   });
 
-  /* ---------------- MODIFICĂ ---------------- */
   $('#tbl tbody').on('click', '.btnEdit', function () {
     const id = $(this).data('id');
     $.getJSON(API + '?action=get&id=' + encodeURIComponent(id), d => {
@@ -145,8 +139,7 @@ $(function () {
       setTimeout(() => $('#fDesc').trigger('focus'), 50);
     }).fail(() => notify('Nu s-au putut încărca datele.', 'danger'));
   });
-
-  /* ---------------- SALVEAZĂ ---------------- */
+  
   $('#frm').on('submit', function (ev) {
     ev.preventDefault();
     if (!this.checkValidity()) { this.reportValidity(); return; }
@@ -162,7 +155,6 @@ $(function () {
       .always(() => { $('#btnSave').prop('disabled', false).removeClass('loading'); });
   });
 
-  /* ---------------- ȘTERGE ---------------- */
   function post(data, after) {
     data.csrf = $('input[name=csrf]').val();
     $.post(API, data, null, 'json')
