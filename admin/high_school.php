@@ -111,7 +111,6 @@ include __DIR__ . '/template/header.php';
   </main>
 </div>
 
-<!-- ============ modal ============ -->
 <div class="modal-overlay" id="modalForm" hidden>
   <div class="modal-box" style="max-width:560px">
     <form id="frm" novalidate>
