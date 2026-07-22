@@ -1,23 +1,17 @@
 <?php
-// admin/liceu_api.php — CRUD pentru home_numa_liceu (cheie = name)
-
-// prinde orice output nedorit (warnings, BOM, spații) ca să nu strice JSON-ul
 ob_start();
 
 require_once __DIR__ . '/admin_init.php';
 
-// aruncă tot ce s-a scris până acum de fișierele incluse
 if (ob_get_length()) {
     ob_clean();
 }
 
-/** @var PDO $con */
 $T = TBL_LICEU;
 $TIP = TBL_TIP;
 
 $action = $_REQUEST['action'] ?? '';
 
-/* ---------------- acțiunile de scriere cer CSRF ---------------- */
 $writeActions = ['create', 'update', 'delete', 'bulk_delete', 'toggle_stop'];
 if (in_array($action, $writeActions, true)) {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !csrf_check($_POST['csrf'] ?? '')) {
@@ -25,7 +19,6 @@ if (in_array($action, $writeActions, true)) {
     }
 }
 
-/* ---------------- helperi pentru citirea formularului ---------------- */
 function post($k, $d = '')
 {
     return trim((string) ($_POST[$k] ?? $d));
@@ -92,7 +85,6 @@ function validate(array $f): array
     return $err;
 }
 
-/* ---------------- upload opțional în /src/images/liceu/ ---------------- */
 function handle_upload(string $fallback, string $schoolName): string
 {
     if (empty($_FILES['photo_file']['name']) || $_FILES['photo_file']['error'] !== UPLOAD_ERR_OK) {
@@ -131,11 +123,9 @@ function handle_upload(string $fallback, string $schoolName): string
     return $fallback;
 }
 
-/* ==================================================================== */
 try {
     switch ($action) {
 
-        /* ---------------- LISTĂ (sursă DataTables) ---------------- */
         case 'list':
             $sql = "SELECT id_numa_liceu, tip, name, city, zone, address, photo,
                            no_clase, total_no_student, romi_student, ces_student,
@@ -145,7 +135,6 @@ try {
             $rows = $con->query($sql)->fetchAll(PDO::FETCH_ASSOC);
             json_out(['data' => $rows]);
 
-        /* ---------------- CITEȘTE UN LICEU ---------------- */
         case 'get':
             $name = trim((string) ($_GET['name'] ?? ''));
             if ($name === '') {
@@ -182,7 +171,7 @@ try {
 
             json_out(['ok' => true, 'msg' => 'Liceul „' . $f['name'] . '” a fost adăugat.']);
 
-        /* ---------------- MODIFICĂ (cheie = numele original) ---------------- */
+
         case 'update':
             $orig = post('orig_name');
             if ($orig === '')
@@ -211,7 +200,7 @@ try {
                 $f['name']
             );
 
-            /* tabelele care stochează numele liceului ca text */
+        
             $NAME_REFS = [
                 DB_PREFIX . 'liceu' => 'name',
                 DB_PREFIX . 'medie' => 'name',
@@ -232,7 +221,7 @@ try {
                 $con->prepare("UPDATE `$T` SET " . implode(', ', $set) . ", `updated_at` = NOW()
                                WHERE name = :orig_name")->execute($params);
 
-                /* propagăm redenumirea în toate tabelele legate */
+                
                 $propagat = [];
                 if ($f['name'] !== $orig) {
                     foreach ($NAME_REFS as $tbl => $col) {
@@ -243,7 +232,7 @@ try {
                                 $propagat[] = str_replace(DB_PREFIX, '', $tbl) . ' (' . $u->rowCount() . ')';
                             }
                         } catch (Throwable $ex) {
-                            // tabel inexistent → îl ignorăm
+                        
                         }
                     }
                 }
@@ -254,7 +243,6 @@ try {
                 throw $ex;
             }
 
-            /* redenumim și fișierul foto, dacă respecta convenția „Nume.jpg” */
             if ($f['name'] !== $orig && $current['photo']) {
                 $ext = pathinfo($current['photo'], PATHINFO_EXTENSION);
                 if (pathinfo($current['photo'], PATHINFO_FILENAME) === $orig && $ext !== '') {
@@ -271,7 +259,6 @@ try {
             }
             json_out(['ok' => true, 'msg' => $msg]);
 
-        /* ---------------- ȘTERGE ---------------- */
         case 'delete':
             $name = post('name');
             if ($name === '') {
@@ -284,7 +271,6 @@ try {
                 'msg' => $st->rowCount() ? 'Liceul a fost șters.' : 'Nu s-a șters nimic.',
             ]);
 
-        /* ---------------- ȘTERGERE MULTIPLĂ ---------------- */
         case 'bulk_delete':
             $names = $_POST['names'] ?? [];
             if (!is_array($names) || !$names) {
@@ -299,7 +285,6 @@ try {
             $st->execute($names);
             json_out(['ok' => true, 'msg' => $st->rowCount() . ' liceu(e) șterse.']);
 
-        /* ---------------- ASCUNDE / AFIȘEAZĂ ---------------- */
         case 'toggle_stop':
             $name = post('name');
             if ($name === '') {
@@ -309,7 +294,6 @@ try {
             $st->execute([$name]);
             json_out(['ok' => true, 'msg' => 'Starea a fost actualizată.']);
 
-        /* ---------------- liste pentru selecturi ---------------- */
         case 'lookups':
             $tip = $con->query("SELECT description FROM `$TIP` ORDER BY description")
                 ->fetchAll(PDO::FETCH_COLUMN);
