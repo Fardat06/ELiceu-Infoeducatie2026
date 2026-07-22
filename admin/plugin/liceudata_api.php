@@ -286,7 +286,6 @@ try {
             $st->execute([$id]);
             $nou = (int)$st->fetchColumn();
 
-            // păstrăm stopx sincronizat în medie și poztion
             $con->prepare("UPDATE `$M` SET stopx = ? WHERE id_medie   = ?")->execute([$nou, $id]);
             $con->prepare("UPDATE `$P` SET stopx = ? WHERE id_poztion = ?")->execute([$nou, $id]);
 
@@ -328,7 +327,6 @@ try {
             $TB  = DB_PREFIX . 'bilingv_a';
             $TLB = DB_PREFIX . 'limba';
 
-            /** Citește o coloană dintr-un tabel de referință; ignoră tabelele lipsă. */
             $ref = function (string $tbl, string $col) use ($con) {
                 try {
                     return $con->query("SELECT DISTINCT `$col` FROM `$tbl`
