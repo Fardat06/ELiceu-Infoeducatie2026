@@ -1,4 +1,3 @@
-/* admin/layout/js/settings_admin.js — setări site */
 $(function () {
 
   const API = window.API || 'plugin/settings_api.php';
@@ -20,7 +19,6 @@ $(function () {
     'smtp_host', 'smtp_port', 'smtp_user', 'smtp_secure'
   ];
 
-  /* ---------------- încărcare ---------------- */
   function load() {
     $.getJSON(API + '?action=get', d => {
       if (!d.ok) return notify(d.msg || 'Eroare la citire.', 'danger');
@@ -84,7 +82,6 @@ $(function () {
       .always(() => $('#btnSave').prop('disabled', false).removeClass('loading'));
   });
 
-  /* ---------------- ștergere imagini ---------------- */
   function delImage(which) {
     if (!confirm('Ștergi această imagine?')) return;
     $.post(API, { action: 'delete_logo', which: which, csrf: $('input[name=csrf]').val() }, null, 'json')
@@ -94,7 +91,6 @@ $(function () {
   $('#btnDelLogo').on('click', () => delImage('logo'));
   $('#btnDelFav').on('click',  () => delImage('favicon'));
 
-  /* ---------------- email de test ---------------- */
   $('#btnTestMail').on('click', function () {
     const sugestie = $('#email_contact').val() || '';
     const to = prompt('Trimite un email de test către:', sugestie);
