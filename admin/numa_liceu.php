@@ -24,13 +24,11 @@ include __DIR__ . '/template/header.php';
   <main class="dashboard-main">
     <?php include __DIR__ . '/template/header_main.php'; ?>
 
-    <!-- ACEST wrapper face scroll-ul posibil -->
     <div class="dashboard-content">
       <div class="dashboard-view active" id="licee">
 
         <div id="alertBox"></div>
 
-        <!-- statistici -->
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-card-header">
@@ -73,7 +71,6 @@ include __DIR__ . '/template/header.php';
           </div>
         </div>
 
-        <!-- tabel -->
         <div class="dashboard-table-container">
           <div class="dashboard-table-header">
             <h3 class="dashboard-table-title">Listă licee</h3>
@@ -119,11 +116,10 @@ include __DIR__ . '/template/header.php';
         </div>
 
       </div>
-    </div><!-- /.dashboard-content -->
+    </div>
   </main>
-</div><!-- /.dashboard-container -->
+</div>
 
-<!-- ============ modal ============ -->
 <div class="modal-overlay" id="modalForm" hidden>
   <div class="modal-box">
     <form id="frm" enctype="multipart/form-data" novalidate>
