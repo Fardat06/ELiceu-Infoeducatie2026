@@ -133,7 +133,6 @@ include __DIR__ . '/template/header.php';
     </main>
 </div>
 
-<!-- ============ modal ============ -->
 <div class="modal-overlay" id="modalForm" hidden>
     <div class="modal-box">
         <form id="frm" novalidate>
@@ -244,7 +243,6 @@ include __DIR__ . '/template/header.php';
                     </div>
                 </div>
 
-                <!-- locuri -->
                 <div class="modal-pane" id="t2">
                     <div class="form-grid">
                         <?php foreach ([2025, 2024, 2023, 2022, 2021, 2020] as $y): ?>
@@ -256,7 +254,6 @@ include __DIR__ . '/template/header.php';
                     </div>
                 </div>
 
-                <!-- medii -->
                 <div class="modal-pane" id="t3">
                     <p class="form-text" style="color:var(--color-text-secondary);margin-bottom:var(--space-md)">
                         <strong>u_medie</strong> = media ultimului admis · <strong>p_medie</strong> = media primului
@@ -278,7 +275,6 @@ include __DIR__ . '/template/header.php';
                     </div>
                 </div>
 
-                <!-- poziții -->
                 <div class="modal-pane" id="t4">
                     <p class="form-text" style="color:var(--color-text-secondary);margin-bottom:var(--space-md)">
                         <strong>u_pozition</strong> = poziția ultimului admis · <strong>nr_place</strong> = număr locuri
@@ -312,7 +308,6 @@ include __DIR__ . '/template/header.php';
     </div>
 </div>
 
-<!-- ============ modal integritate ============ -->
 <div class="modal-overlay" id="modalInt" hidden>
     <div class="modal-box" style="max-width:520px">
         <div class="modal-box-header">
