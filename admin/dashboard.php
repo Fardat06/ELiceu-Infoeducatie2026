@@ -1,18 +1,17 @@
 <?php
-     session_start(); //array
+     session_start();
   
     include '../plugin/function.php';
 
-    if (isset($_SESSION['username-x'])){ // If the user is login
+    if (isset($_SESSION['username-x'])){ 
         $pageTitle1='DASHBOARD';
         include '../plugin/init.php';
 
-        ////////////////////////////// Start Dashboard page //////////////////////////////////
-        $numUser = 5; // Number of latest users
-        $latestUsers=getLatest('*','users','UserID',$numUser ); // latest users array
+        $numUser = 5;
+        $latestUsers=getLatest('*','users','UserID',$numUser );
 
         
-        $numComment = 5; // Number of latest comments
+        $numComment = 5;
 
 
     
