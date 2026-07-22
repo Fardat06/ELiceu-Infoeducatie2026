@@ -10,12 +10,11 @@
     $id=isset($_GET['id']) ? $_GET['id'] : 'Manage';
   // echo $id;
 
-    if (isset($_SESSION['username-x'])){ // If the user is login
-        header('Location: dashboard.php');  //Redirect to dashboard page
+    if (isset($_SESSION['username-x'])){ 
+        header('Location: dashboard.php'); 
     }
     include '../plugin/init.php';
     echo '<link rel="stylesheet" href="layout/css/login.css" />';
-     //Check if user coming from HTTP post request
     if($_SERVER['REQUEST_METHOD']== 'POST'){
         
         $username = $_POST['user'];
@@ -25,7 +24,6 @@
         $salt = md5(313);
         $hashedpass = md5($password . $salt);
 echo $username;
-        // Check if the user exist in database
         
         $stmt = $con->prepare("SELECT 
                                     userid ,username , password ,Language
@@ -38,10 +36,9 @@ echo $username;
                                      RegStatus=0 
                                      LIMIT 1");
         $stmt->execute(array($username , $hashedpass));
-        $row = $stmt->fetch(); // save the data from mysql tabel on array
+        $row = $stmt->fetch(); 
         $count = $stmt->rowCount();
         
-        //If $count > 0 this mean the database contain record about this username
         if ($count >0){
             print_r($row);
 
@@ -50,9 +47,9 @@ echo $username;
             $_SESSION['dir']  =$urlParts[1];
 
           
-            $_SESSION['ID'] = $row['userid'] ;  //Rgister session ID userid sensble case
-            $_SESSION['username-x'] = $username ; //Rgister session name
-            $_SESSION['Language'] = $row['Language'] ; //Rgister session Lang
+            $_SESSION['ID'] = $row['userid'] ;
+            $_SESSION['username-x'] = $username ;
+            $_SESSION['Language'] = $row['Language'] ;
              
             $stat3 = $con->prepare("SELECT Lang_Code  , Lang_Name , Order_No FROM " . DB_PREFIX . "languages WHERE Stopx=0 AND Translate='1' ORDER BY Order_No ASC");
             $stat3->execute();
@@ -65,7 +62,7 @@ echo $username;
             }
              
              
-            header('Location: dashboard.php');  //Redirect to dashboard page
+            header('Location: dashboard.php');  
         //    exit();  
         }
     }
