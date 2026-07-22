@@ -1,8 +1,3 @@
-/* admin/layout/js/lookup_admin.js
-   CRUD generic pentru tabelele simple de tip lookup (id + description).
-   Configurat din pagină prin window.API, window.ID_FIELD, window.LABEL.
-
-   Folosit de: profil.php, high_school.php, specializare.php, bilingv.php */
 $(function () {
 
   const API      = window.API      || '';
@@ -11,7 +6,6 @@ $(function () {
 
   if (!API) { console.error('window.API nu este definit.'); return; }
 
-  /* ---------------- modal ---------------- */
   const modalEl = document.getElementById('modalForm');
 
   const modal = {
@@ -19,7 +13,6 @@ $(function () {
     hide: () => { modalEl.hidden = true;  document.body.style.overflow = ''; }
   };
 
-  // se închide DOAR din X sau Anulează, nu din click pe fundal
   $('#modalForm').on('click', function (ev) {
     if (ev.target.closest('[data-close]')) modal.hide();
   });
@@ -30,7 +23,6 @@ $(function () {
 
   let selected = new Set();
 
-  /* ---------------- utilitare ---------------- */
   function esc(s) {
     return String(s ?? '').replace(/[&<>"']/g, c =>
       ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -48,7 +40,6 @@ $(function () {
     setTimeout(() => $el.fadeOut(200, function () { $(this).remove(); }), 5000);
   }
 
-  /* ---------------- DataTable ---------------- */
   const dt = $('#tbl').DataTable({
     ajax: { url: API + '?action=list', dataSrc: 'data' },
     pageLength: 25,
@@ -71,7 +62,6 @@ $(function () {
 
       { data: ID_FIELD, width: '60px' },
 
-      /* denumire — marcăm rândurile goale, dacă tabelul permite */
       { data: 'description',
         render: (d, t) => {
           if (t !== 'display') return d;
@@ -80,7 +70,6 @@ $(function () {
             : `<div class="project-title-text">${esc(d)}</div>`;
         } },
 
-      /* utilizare */
       { data: 'nr_uz',
         render: (n, t, r) => {
           n = +n || 0;
@@ -91,7 +80,6 @@ $(function () {
             : '<span class="status-badge warning">nefolosit</span>';
         } },
 
-      /* acțiuni — rândurile rezervate nu se modifică și nu se șterg */
       { data: null, orderable: false, searchable: false,
         render: r => r.rezervat
           ? `<div class="row-actions">
@@ -120,7 +108,6 @@ $(function () {
   }
   dt.on('xhr', () => setTimeout(() => stats(dt), 0));
 
-  /* ---------------- filtru folosit / nefolosit ---------------- */
   $.fn.dataTable.ext.search.push(function (settings, data, idx) {
     if (settings.nTable.id !== 'tbl') return true;
     const v = $('#fUsed').val();
@@ -130,7 +117,7 @@ $(function () {
   });
   $('#fUsed').on('change', () => dt.draw());
 
-  /* ---------------- selecție ---------------- */
+
   function refreshSel() {
     $('#selCount').text(selected.size);
     $('#btnBulkDelete').prop('disabled', selected.size === 0);
@@ -155,7 +142,6 @@ $(function () {
     refreshSel();
   });
 
-  /* ---------------- ADAUGĂ ---------------- */
   $('#btnAdd').on('click', function () {
     $('#frm')[0].reset();
     $('#fAction').val('create');
@@ -166,7 +152,6 @@ $(function () {
     setTimeout(() => $('#fDesc').trigger('focus'), 50);
   });
 
-  /* ---------------- MODIFICĂ ---------------- */
   $('#tbl tbody').on('click', '.btnEdit', function () {
     const id = $(this).data('id');
 
@@ -178,7 +163,6 @@ $(function () {
       $('#fDesc').val(d.row.description);
       $('#modalTitle').text('Modifică ' + LABEL + ' #' + d.row[ID_FIELD]);
 
-      /* detaliu utilizare — doar dacă API-ul îl trimite și pagina are containerul */
       const $box = $('#usageBox');
       if ($box.length) {
         const u    = d.row.usage || {};
@@ -232,7 +216,6 @@ $(function () {
       .always(() => { $('#btnSave').prop('disabled', false).removeClass('loading'); });
   });
 
-  /* ---------------- ȘTERGE ---------------- */
   function post(data, after) {
     data.csrf = $('input[name=csrf]').first().val();
     $.post(API, data, null, 'json')
