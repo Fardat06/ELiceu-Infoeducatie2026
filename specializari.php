@@ -373,7 +373,7 @@ include 'template/header.php';
     			font-size: 16px;
   		">!   </span> 
 
-		&nbsp;&nbsp;Pentru a intra la o astfel de clasă, trebuie să fie susținută o testare care poate fi echivalată cu diferite examene recunoscute precum Cambridge, DELF etc. Nivelul B2 First este minim pentru a fi acceptat.
+		&nbsp;&nbsp;Pentru a intra la o astfel de clasă, trebuie să fie susținută o testare care poate fi echivalată cu diferite examene recunoscute precum Cambridge, DELF etc. Nivelul B1 este minim pentru a fi acceptat.
 	    </p>
           </div>
 
