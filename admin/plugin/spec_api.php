@@ -1,13 +1,10 @@
 <?php
-// admin/plugin/spec_api.php — CRUD pentru home_specializare (cheie = id)
 ob_start();
 require_once __DIR__ . '/admin_init.php';
 if (ob_get_length()) { ob_clean(); }
 
-/** @var PDO $con */
 $T = DB_PREFIX . 'specializare';
 
-// tabele care stochează specializarea ca text (nu prin FK)
 $REFS = [
     DB_PREFIX . 'liceu'         => 'specializare',
     DB_PREFIX . 'medie'         => 'specializare',
@@ -37,7 +34,6 @@ function tableExists(PDO $con, string $t): bool {
     }
 }
 
-/** Numără utilizările pe toate tabelele de referință. */
 function countUsage(PDO $con, array $refs, string $desc): int {
     $total = 0;
     foreach ($refs as $tbl => $col) {
@@ -49,7 +45,6 @@ function countUsage(PDO $con, array $refs, string $desc): int {
     return $total;
 }
 
-/** Detaliu pe tabele — util în modal, ca să știi unde e folosită. */
 function usageBreakdown(PDO $con, array $refs, string $desc): array {
     $out = [];
     foreach ($refs as $tbl => $col) {
