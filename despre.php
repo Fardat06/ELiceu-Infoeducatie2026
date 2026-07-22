@@ -1,8 +1,6 @@
 <?php
-// Output buffering start
 include_once 'plugin/function.php';
-   ob_start("sanitize_output"); // Output buffering start
-//ob_start(); 
+   ob_start("sanitize_output");
 session_start();
 $pageTitle1 = 'High school';
 unset($_SESSION['pagename']);
@@ -119,21 +117,21 @@ include 'template/header.php';
  	 <img src="src\images\poza.jpg" alt="Echipa Eliceu">
 	</div>
 
-        <div class="team-text">
-          <h2>Cum am lucrat la proiect?</h2>
+<div class="team-text">
+  <h2>Cine suntem?</h2>
 
-          <p>
-            Ǝliceu a pornit de la o problemă simplă: alegerea liceului este importantă, dar informațiile sunt adesea greu de comparat.
-          </p>
+  <p>
+    Suntem <strong>Cătrună Daria</strong> și <strong>Farhat Fatima</strong>, eleve în clasa a X-a, la Colegiul Național „Grigore Moisil” din București, profil Matematică-Informatică, intensiv Informatică.
+  </p>
 
-          <p>
-            Echipa noastră a lucrat la organizarea datelor, realizarea designului, construirea paginilor și testarea funcțiilor principale ale platformei.
-          </p>
+  <p>
+    Am creat platforma Ǝliceu pornind de la experiența noastră și de la dificultățile pe care le întâmpină elevii atunci când trebuie să aleagă liceul și specializarea potrivită.
+  </p>
 
-          <p>
-            Am vrut ca site-ul să fie util, clar și prietenos atât pentru elevii care se pregătesc pentru admitere, cât și pentru familiile și îndrumătorii lor.
-          </p>
-        </div>
+  <p>
+    În realizarea proiectului am lucrat împreună la documentare, organizarea informațiilor, designul platformei, programarea paginilor și dezvoltarea funcțiilor interactive.
+  </p>
+</div>
       </section>
 
       <section class="cta-section">
