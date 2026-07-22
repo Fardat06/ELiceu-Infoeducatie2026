@@ -1,5 +1,4 @@
 <?php
-// admin/plugin/settings_api.php — setări generale ale site-ului
 ob_start();
 require_once __DIR__ . '/admin_init.php';
 if (ob_get_length()) { ob_clean(); }
@@ -18,7 +17,6 @@ if (in_array($action, ['save', 'delete_logo'], true)) {
     }
 }
 
-/* ---------------- cheile permise; orice altceva este ignorat ---------------- */
 $ALLOWED = [
     'site_name'         => 'text',
     'site_tagline'      => 'text',
@@ -57,7 +55,6 @@ $GROUP_OF = [
     'smtp_secure'       => 'smtp',
 ];
 
-/* câmpuri de tip checkbox: absența lor din POST înseamnă „dezactivat” */
 $BOOL_KEYS = ['maintenance_mode'];
 
 function currentUserId(PDO $con): int
@@ -105,7 +102,6 @@ function validateValue(string $key, string $type, string $val): ?string
     return null;
 }
 
-/** Încarcă o imagine în /src/imges/ și returnează numele fișierului. */
 function handleImage(string $field, string $prefix, string $fallback): string
 {
     if (empty($_FILES[$field]['name']) || $_FILES[$field]['error'] !== UPLOAD_ERR_OK) {
@@ -124,7 +120,6 @@ function handleImage(string $field, string $prefix, string $fallback): string
     $ext = strtolower(pathinfo($_FILES[$field]['name'], PATHINFO_EXTENSION));
     if (!isset($allowed[$ext])) return $fallback;
 
-    // SVG și ICO au tipuri MIME inconsistente între servere → le sărim
     if (!in_array($ext, ['svg', 'ico'], true)) {
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         if ($finfo->file($_FILES[$field]['tmp_name']) !== $allowed[$ext]) {
@@ -134,11 +129,9 @@ function handleImage(string $field, string $prefix, string $fallback): string
 
     if (!is_dir(LOGO_DIR)) @mkdir(LOGO_DIR, 0775, true);
 
-    // numele include timestamp → forțează reîmprospătarea cache-ului din browser
     $file = $prefix . '_' . time() . '.' . $ext;
 
     if (move_uploaded_file($_FILES[$field]['tmp_name'], LOGO_DIR . $file)) {
-        // ștergem fișierul vechi doar dacă a fost generat tot de aici
         if ($fallback !== '' && strpos($fallback, $prefix . '_') === 0) {
             @unlink(LOGO_DIR . $fallback);
         }
@@ -147,7 +140,6 @@ function handleImage(string $field, string $prefix, string $fallback): string
     return $fallback;
 }
 
-/** Citește toate setările curente ca tablou asociativ. */
 function readAll(PDO $con, string $T): array
 {
     $out = [];
@@ -160,18 +152,15 @@ function readAll(PDO $con, string $T): array
 try {
     switch ($action) {
 
-        /* ---------------- CITEȘTE ---------------- */
         case 'get':
             $out = readAll($con, $T);
-
-            // completăm cheile lipsă, ca formularul să nu rămână cu valori vechi
+        
             foreach (array_keys($ALLOWED) as $k) {
                 if (!array_key_exists($k, $out)) $out[$k] = '';
             }
 
             json_out(['ok' => true, 'settings' => $out, 'logo_url' => LOGO_URL]);
 
-        /* ---------------- SALVEAZĂ ---------------- */
         case 'save':
             $cur  = readAll($con, $T);
             $vals = [];
@@ -179,16 +168,13 @@ try {
 
             foreach ($ALLOWED as $key => $type) {
 
-                // imaginile se tratează separat, mai jos
                 if (in_array($key, ['site_logo', 'site_favicon'], true)) continue;
 
                 if ($type === 'bool' || in_array($key, $BOOL_KEYS, true)) {
-                    // checkbox nebifat = absent din POST
                     $vals[$key] = !empty($_POST[$key]) ? '1' : '0';
                     continue;
                 }
 
-                // câmp netrimis → păstrăm valoarea existentă
                 if (!array_key_exists($key, $_POST)) continue;
 
                 $val = trim((string)$_POST[$key]);
@@ -205,7 +191,6 @@ try {
                 json_out(['ok' => false, 'msg' => 'Numele site-ului este obligatoriu.'], 422);
             }
 
-            // upload logo / favicon, cu fallback la valorile curente
             $vals['site_logo']    = handleImage('logo_file',    'logo',    $cur['site_logo']    ?? '');
             $vals['site_favicon'] = handleImage('favicon_file', 'favicon', $cur['site_favicon'] ?? '');
 
@@ -244,7 +229,6 @@ try {
 
             json_out(['ok' => true, 'msg' => $msg, 'settings' => $vals]);
 
-        /* ---------------- ȘTERGE LOGO / FAVICON ---------------- */
         case 'delete_logo':
             $which = (($_POST['which'] ?? '') === 'favicon') ? 'site_favicon' : 'site_logo';
 
@@ -264,7 +248,6 @@ try {
 
             json_out(['ok' => true, 'msg' => 'Imaginea a fost ștearsă.']);
 
-        /* ---------------- EMAIL DE TEST ---------------- */
         case 'test_email':
             $to = trim((string)($_GET['to'] ?? ''));
             if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
