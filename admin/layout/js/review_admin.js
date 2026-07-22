@@ -1,4 +1,3 @@
-/* admin/layout/js/review_admin.js — moderare recenzii */
 $(function () {
 
   const API = window.API || 'plugin/review_api.php';
@@ -47,12 +46,11 @@ $(function () {
     return s.length > n ? esc(s.slice(0, n)) + '…' : esc(s);
   };
 
-  /* ---------------- DataTable ---------------- */
   const dt = $('#tbl').DataTable({
     ajax: { url: API + '?action=list', dataSrc: 'data' },
     pageLength: 25,
     lengthMenu: [10, 25, 50, 100],
-    order: [],   // ordinea vine din SQL: în așteptare mai întâi
+    order: [],  
     language: {
       search: 'Caută:', searchPlaceholder: 'liceu, autor, comentariu…',
       lengthMenu: 'Arată _MENU_ înregistrări',
@@ -131,7 +129,6 @@ $(function () {
   }
   dt.on('xhr', () => setTimeout(() => stats(dt), 0));
 
-  /* ---------------- filtre ---------------- */
   $('#fStatus').on('change', function () {
     dt.column(6).search(this.value ? '^' + escRe(this.value) + '$' : '', true, false).draw();
   });
@@ -147,7 +144,6 @@ $(function () {
     d.licee.forEach(l => $('#fLiceu').append(new Option(l, l)));
   });
 
-  /* ---------------- selecție ---------------- */
   function refreshSel() {
     $('#selCount').text(selected.size);
     const off = selected.size === 0;
@@ -170,7 +166,6 @@ $(function () {
     refreshSel();
   });
 
-  /* ---------------- acțiuni ---------------- */
   function post(data, after) {
     data.csrf = $('input[name=csrf]').first().val();
     $.post(API, data, null, 'json')
@@ -210,7 +205,6 @@ $(function () {
     refreshSel();
   }
 
-  /* ---------------- modal: vezi recenzia ---------------- */
   $('#tbl tbody').on('click', '.btnView', function () {
     const id = $(this).data('id');
     $.getJSON(API + '?action=get&id=' + encodeURIComponent(id), d => {
@@ -228,7 +222,7 @@ $(function () {
       $('#vData').text(fmtDate(current.created_at));
       $('#vComment').text(current.comment || '');
 
-      // alte recenzii ale autorului
+
       const alt = current.altele || [];
       if (alt.length) {
         $('#vAltele').html(alt.map(a => `
@@ -265,7 +259,6 @@ $(function () {
     post({ action: 'unpublish', id: current.id }, () => modal.hide());
   });
 
-  /* ---------------- suspendare autor ---------------- */
   $('#btnSuspend').on('click', function () {
     if (!current) return;
     const nume = current.autor || ('user #' + current.user_id);
