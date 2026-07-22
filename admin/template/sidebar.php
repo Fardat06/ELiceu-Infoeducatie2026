@@ -1,13 +1,6 @@
 <?php
-/**
- * admin/template/sidebar.php
- * Meniu lateral — fiecare intrare este o pagină separată de administrare.
- */
 
-// pagina curentă, pentru marcarea linkului activ
 $currentPage = basename($_SERVER['PHP_SELF']);
-
-// helper local: clasa "active" pentru pagina curentă
 if (!function_exists('navActive')) {
     function navActive(string $file, string $current): string
     {
@@ -15,12 +8,10 @@ if (!function_exists('navActive')) {
     }
 }
 
-// helper de traducere, dacă lipsește (fallback: textul original)
 if (!function_exists('lang')) {
     function lang($k) { return $k; }
 }
 
-// meniul — adaugă aici pagini noi pe măsură ce le creezi
 $navItems = [
     ['file' => 'dashboard.php',   'icon' => 'dashboard',   'label' => 'Dashboard',        'view' => 'overview'],
     ['file' => 'numa_liceu.php',  'icon' => 'school',      'label' => 'High school',      'view' => 'licee'],
