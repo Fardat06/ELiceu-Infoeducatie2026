@@ -1,12 +1,10 @@
 <?php
-// admin/plugin/tip_api.php — CRUD pentru home_tip_liceu (cheie = id)
 ob_start();
 require_once __DIR__ . '/admin_init.php';
 if (ob_get_length()) { ob_clean(); }
 
-/** @var PDO $con */
-$T  = TBL_TIP;                      // home_tip_liceu
-$TL = TBL_LICEU;                    // home_numa_liceu
+$T  = TBL_TIP;                    
+$TL = TBL_LICEU;                    
 
 $action = $_REQUEST['action'] ?? '';
 
@@ -21,7 +19,6 @@ function p($k, $d = '') { return trim((string)($_POST[$k] ?? $d)); }
 try {
     switch ($action) {
 
-/* ---------------- LISTĂ ---------------- */
         case 'list':
             $TL2 = DB_PREFIX . 'liceu';
             $rows = $con->query("SELECT id_tip_liceu, description FROM `$T` ORDER BY description ASC")
@@ -41,7 +38,6 @@ try {
             unset($r);
             json_out(['data' => $rows]);
 
-        /* ---------------- CITEȘTE ---------------- */
         case 'get':
             $id = (int)($_GET['id'] ?? 0);
             $st = $con->prepare("SELECT * FROM `$T` WHERE id_tip_liceu = ? LIMIT 1");
@@ -50,7 +46,6 @@ try {
             if (!$row) json_out(['ok' => false, 'msg' => 'Tipul nu a fost găsit.'], 404);
             json_out(['ok' => true, 'row' => $row]);
 
-        /* ---------------- ADAUGĂ ---------------- */
         case 'create':
             $desc = p('description');
             if ($desc === '')              json_out(['ok' => false, 'msg' => 'Denumirea este obligatorie.'], 422);
@@ -64,7 +59,6 @@ try {
             $st->execute([$desc]);
             json_out(['ok' => true, 'msg' => 'Tipul „' . $desc . '” a fost adăugat.']);
 
-/* ---------------- MODIFICĂ ---------------- */
         case 'update':
             $id   = (int)p('id_tip_liceu');
             $desc = p('description');
@@ -81,7 +75,6 @@ try {
             $st->execute([$desc, $id]);
             if ($st->fetch()) json_out(['ok' => false, 'msg' => 'Această denumire este deja folosită.'], 409);
 
-            /* tabelele care stochează tipul ca text */
             $TIP_REFS = [
                 DB_PREFIX . 'numa_liceu'    => 'tip',
                 DB_PREFIX . 'liceu'         => 'tip',
@@ -104,7 +97,6 @@ try {
                                 $propagat[] = str_replace(DB_PREFIX, '', $tbl) . ' (' . $u->rowCount() . ')';
                             }
                         } catch (Throwable $ex) {
-                            // tabel inexistent → îl ignorăm
                         }
                     }
                 }
@@ -119,7 +111,6 @@ try {
             if ($propagat) $msg .= ' Actualizat în: ' . implode(', ', $propagat) . '.';
             json_out(['ok' => true, 'msg' => $msg]);
 
-/* ---------------- ȘTERGE ---------------- */
         case 'delete':
             $id = (int)p('id_tip_liceu');
             if (!$id) json_out(['ok' => false, 'msg' => 'ID lipsă.'], 400);
@@ -146,7 +137,6 @@ try {
             $st->execute([$id]);
             json_out(['ok' => true, 'msg' => 'Tipul a fost șters.']);
             
-        /* ---------------- ȘTERGERE MULTIPLĂ ---------------- */
         case 'bulk_delete':
             $ids = $_POST['ids'] ?? [];
             if (!is_array($ids) || !$ids) json_out(['ok' => false, 'msg' => 'Nicio selecție.'], 400);
