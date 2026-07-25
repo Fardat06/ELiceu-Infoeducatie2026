@@ -78,15 +78,9 @@ window.addEventListener("load", function () {
         position: "bottom"
       },
       {
-        element: 'nav a[href="login.php#register"]',
-        title: "Înregistrare",
-        intro: "De aici utilizatorii noi își pot crea cont.",
-        position: "bottom"
-      },
-      {
         element: 'nav a[href="login.php"]',
-        title: "Autentificare",
-        intro: "De aici utilizatorii existenți se pot autentifica.",
+        title: "Contul meu",
+        intro: "De aici utilizatorii existenți se pot autentifica, iar cei noi își pot face cont.",
         position: "bottom"
       },
       {
