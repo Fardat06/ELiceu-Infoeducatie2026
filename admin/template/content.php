@@ -1,8 +1,4 @@
 <?php
-/**
- * admin/template/content.php
- * Inclus din dashboard.php — $con (PDO) există deja.
- */
 global $con;
 if (!isset($con) || !($con instanceof PDO)) {
     require_once __DIR__ . '/../plugin/admin_init.php';
@@ -18,8 +14,6 @@ if (!function_exists('e')) {
         return htmlspecialchars((string)($v ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 }
-
-/* ---------------- statistici ---------------- */
 $stats = [
     'total'    => 0,
     'active'   => 0,
@@ -55,7 +49,6 @@ try {
     $dashError = $ex->getMessage();
 }
 
-/* ---------------- grafic: licee pe sector ---------------- */
 $perSector = [];
 try {
     $perSector = $con->query("
@@ -67,7 +60,6 @@ try {
     ")->fetchAll(PDO::FETCH_ASSOC);
 } catch (Throwable $ex) { /* ignoră */ }
 
-/* ---------------- grafic: licee pe tip (top 8) ---------------- */
 $perTip = [];
 try {
     $perTip = $con->query("
@@ -80,7 +72,6 @@ try {
     ")->fetchAll(PDO::FETCH_ASSOC);
 } catch (Throwable $ex) { /* ignoră */ }
 
-/* ---------------- tabel: ultimele licee modificate ---------------- */
 $recente = [];
 try {
     $recente = $con->query("
@@ -92,7 +83,6 @@ try {
     ")->fetchAll(PDO::FETCH_ASSOC);
 } catch (Throwable $ex) { /* ignoră */ }
 
-/* ---------------- top licee după medie ---------------- */
 $topMedii = [];
 try {
     $topMedii = $con->query("
@@ -125,7 +115,6 @@ function medieBadge($v): string
     </div>
   <?php endif; ?>
 
-  <!-- ============ Overview ============ -->
   <div class="dashboard-view active" id="overview">
 
     <!-- Stats Cards -->
@@ -208,8 +197,7 @@ function medieBadge($v): string
         </div>
       </div>
     </div>
-
-    <!-- Recent -->
+      
     <div class="dashboard-table-container">
       <div class="dashboard-table-header">
         <h3 class="dashboard-table-title">Ultimele licee modificate</h3>
@@ -261,7 +249,6 @@ function medieBadge($v): string
     </div>
   </div>
 
-  <!-- ============ Licee ============ -->
   <div class="dashboard-view" id="projects">
     <div class="dashboard-table-container">
       <div class="dashboard-table-header">
@@ -309,7 +296,6 @@ function medieBadge($v): string
     </div>
   </div>
 
-  <!-- ============ Specializări ============ -->
   <div class="dashboard-view" id="tasks">
     <div class="empty-state">
       <div class="empty-state-icon">
@@ -322,7 +308,6 @@ function medieBadge($v): string
     </div>
   </div>
 
-  <!-- ============ Rapoarte ============ -->
   <div class="dashboard-view" id="reports">
     <div class="empty-state">
       <div class="empty-state-icon">
@@ -336,7 +321,6 @@ function medieBadge($v): string
     </div>
   </div>
 
-  <!-- ============ Setări ============ -->
   <div class="dashboard-view" id="settings">
     <div class="empty-state">
       <div class="empty-state-icon">
@@ -351,7 +335,6 @@ function medieBadge($v): string
 </div>
 
 <script>
-/* datele pentru grafice, generate din PHP */
 window.DASH = {
   sector: {
     labels: <?= json_encode(array_column($perSector, 'zone'), JSON_UNESCAPED_UNICODE) ?>,
