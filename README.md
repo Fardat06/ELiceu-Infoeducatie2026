@@ -85,6 +85,7 @@ root
 ### Farhat Fatima
 - Proiectarea și implementarea backend-ului aplicației în PHP;
 - Proiectarea și administrarea bazei de date MySQL;
+- Realizarea paginilor de tip „magazin de licee”;
 - Dezvoltarea panoului de administrare și a modulelor pentru gestionarea liceelor, specializărilor, utilizatorilor și recenziilor;
 - Implementarea sistemului de autentificare, autorizare și a mecanismelor de securitate (2FA, OTP, CSRF, hash-uirea parolelor și gestionarea sesiunilor);
 - Configurarea serviciilor de e-mail, a serverului și publicarea aplicației;
