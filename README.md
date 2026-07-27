@@ -94,3 +94,6 @@ root
 ## Autori
 - Farhat Fatima-Maria
 - Cătrună Daria-Andreea
+
+## Notă
+-Toate pozele și descrierile specifice ale fiecărei instituții de învățământ liceal din paginile Toate Liceele, Profiluri și Admitere sunt luate din surse externe.
