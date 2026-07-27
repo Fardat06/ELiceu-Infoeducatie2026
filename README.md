@@ -74,6 +74,21 @@ root
 -	Dispozitive compatibile: Platforma poate fi utilizată pe desktop, laptop, tabletă și telefon mobil, având o interfață complet responsive, adaptată automat dimensiunii ecranului. 
 -	Metode de utilizare: Interfața este optimizată atât pentru utilizarea cu tastatură și mouse, cât și pentru dispozitive cu ecran tactil (touchscreen).
 
+## Împărțirea rolurilor membrilor echipei
+# Cătrună Daria
+- Proiectarea și implementarea interfeței grafice (frontend) și a designului responsiv al platformei;
+- Realizarea paginii „Acasă” și a elementelor de experiență a utilizatorului (UI/UX);
+- Dezvoltarea testului de orientare și a paginilor dedicate profilurilor și specializărilor;
+- Implementarea secțiunii „Evenimente și noutăți”;
+- Dezvoltarea chatbotului de recomandare, inclusiv interpretarea mesajelor utilizatorului, integrarea cu modelul de inteligență artificială și afișarea rezultatelor;
+- Contribuții la optimizarea experienței de utilizare și la testarea funcționalităților dezvoltate.
+# Farhat Fatima
+- Proiectarea și implementarea backend-ului aplicației în PHP;
+- Proiectarea și administrarea bazei de date MySQL;
+- Dezvoltarea panoului de administrare și a modulelor pentru gestionarea liceelor, specializărilor, utilizatorilor și recenziilor;
+- Implementarea sistemului de autentificare, autorizare și a mecanismelor de securitate (2FA, OTP, CSRF, hash-uirea parolelor și gestionarea sesiunilor);
+- Configurarea serviciilor de e-mail, a serverului și publicarea aplicației;
+- Contribuții la integrarea componentelor aplicației, testare și mentenanță.
 
 ## Autori
 - Farhat Fatima-Maria
