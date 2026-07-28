@@ -1,6 +1,9 @@
 window.addEventListener("load", function () {
   const tutorialKey = "eliceu_tutorial_done";
 
+  const esteTelefon = window.matchMedia("(max-width: 700px)").matches;
+
+  if (esteTelefon) return;
 
   if (localStorage.getItem(tutorialKey) === "true") return;
 
