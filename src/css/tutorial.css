@@ -192,12 +192,6 @@ body {
 }
 
 @media (max-width: 700px) {
-  .introjs-tooltip.eliceu-tooltip {
-    width: calc(100vw - 32px) !important;
-    min-width: auto !important;
-    max-width: calc(100vw - 32px) !important;
-    padding: 22px !important;
-  }
 
   .introjs-tooltip-title {
     font-size: 16px !important;
